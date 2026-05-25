@@ -1,0 +1,38 @@
+/* Design tokens — RE/MAX inspired, personal & minimal */
+:root {
+  --color-navy: #0a2540;
+  --color-navy-light: #1a3a5c;
+  --color-navy-dark: #061829;
+  --color-red: #dc1c2e;
+  --color-red-soft: #e84555;
+  --color-white: #ffffff;
+  --color-cream: #fafaf8;
+  --color-warm: #f5f3ef;
+  --color-text: #0a2540;
+  --color-text-muted: rgba(10, 37, 64, 0.65);
+  --color-border: rgba(10, 37, 64, 0.1);
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-section: clamp(4rem, 8vw, 7rem);
+
+  --container: 80rem;
+  --header-height: 5rem;
+  --radius: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(10, 37, 64, 0.06);
+  --shadow-md: 0 8px 30px rgba(10, 37, 64, 0.08);
+  --shadow-lg: 0 20px 50px rgba(10, 37, 64, 0.12);
+  --shadow-red: 0 8px 24px rgba(220, 28, 46, 0.25);
+
+  --transition: 0.3s ease;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nemovitosti | Michal Janoušek</title>
+  <meta name="description" content="Aktuální nabídka a prodané nemovitosti — byty, domy ve Středočeském kraji, Praze a Ústeckém kraji.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <main>
+    <section class="page-hero page-hero--center">
+      <div class="container fade-in">
+        <p class="label">Nemovitosti</p>
+        <h1 class="heading-display">Aktuální nabídka a reference</h1>
+        <p class="text-body">Prohlédněte si nemovitosti v nabídce i úspěšně prodané reference.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="filter-tabs">
+          <button type="button" class="filter-tab is-active" data-filter="all">Všechny</button>
+          <button type="button" class="filter-tab" data-filter="available">Aktuální nabídka</button>
+          <button type="button" class="filter-tab" data-filter="sold">Prodané</button>
+        </div>
+        <div class="grid-3" id="properties-grid"></div>
+      </div>
+    </section>
+  </main>
+  <div id="footer-placeholder"></div>
+  <script src="js/config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/properties.js"></script>
+  <script src="js/layout.js"></script>
+</body>
+</html>

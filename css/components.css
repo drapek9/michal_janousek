@@ -69,6 +69,19 @@
   width: 100%;
 }
 
+.btn--arrow .btn__icon.material-symbols-outlined {
+  flex-shrink: 0;
+  margin-left: 0.15rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  transition: transform var(--transition);
+}
+
+.btn--arrow:hover .btn__icon {
+  transform: translate(2px, -2px);
+}
+
 /* Cards */
 .card {
   background: var(--color-white);
@@ -76,6 +89,12 @@
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), transform var(--transition);
+  cursor: pointer;
+}
+
+.card__inner {
+  display: block;
+  color: inherit;
 }
 
 .card:hover {
@@ -178,6 +197,25 @@
   gap: 0.5rem;
 }
 
+/* Karty nemovitostí – jemné ztmavení od pozadí */
+.property-cards .card {
+  background: #f6f5f3;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.property-cards .card__image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 37, 64, 0.05);
+  pointer-events: none;
+}
+
+.property-cards .card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
 /* Benefit / service cards */
 .feature-card {
   padding: 2rem;
@@ -228,14 +266,21 @@
   flex-direction: column;
   height: 100%;
   padding: 2rem;
-  background: var(--color-white);
+  background: var(--color-warm);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition);
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.section--warm .testimonial,
+.section--cream .testimonial {
+  background: var(--color-white);
 }
 
 .testimonial:hover {
-  box-shadow: var(--shadow-md);
+  border-color: rgba(220, 28, 46, 0.18);
+  box-shadow: var(--shadow-lg);
 }
 
 .stars {
@@ -252,7 +297,7 @@
 
 .testimonial__text {
   flex: 1;
-  margin: 1rem 0 1.5rem;
+  margin: 0 0 1.5rem;
   color: var(--color-text-muted);
   line-height: 1.7;
   font-style: italic;
@@ -320,6 +365,182 @@
 @media (min-width: 640px) {
   .form-grid--2 {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
+}
+
+.form-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.form-fieldset:last-of-type {
+  margin-bottom: 0;
+}
+
+.form-fieldset__legend {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-navy);
+  margin-bottom: 1rem;
+  padding: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.65rem;
+  color: var(--color-navy);
+}
+
+.form-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.form-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.form-radio input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  accent-color: var(--color-red);
+}
+
+.form-radio:has(input:checked) {
+  color: var(--color-navy);
+  font-weight: 500;
+}
+
+[data-estimate-field][hidden] {
+  display: none;
+}
+
+/* Vícekrokový formulář odhadu */
+.form-wizard__header {
+  margin-bottom: 1.75rem;
+}
+
+.form-wizard__counter {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.form-wizard__counter strong {
+  color: var(--color-navy);
+  font-weight: 600;
+}
+
+.form-wizard__bar {
+  height: 4px;
+  background: var(--color-warm);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.form-wizard__fill {
+  height: 100%;
+  background: var(--color-red);
+  border-radius: var(--radius-full);
+  transition: width 0.35s ease;
+}
+
+.form-wizard__step-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+.form-wizard__panels {
+  min-height: 8rem;
+}
+
+.form-wizard__panel {
+  animation: wizardFadeIn 0.35s ease;
+}
+
+.form-wizard__panel[hidden] {
+  display: none !important;
+}
+
+@keyframes wizardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.form-wizard__panel-desc {
+  font-size: 1.0625rem;
+  color: var(--color-navy);
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+}
+
+.form-wizard__hint {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.form-wizard__error {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--color-red);
+  background: rgba(220, 28, 46, 0.08);
+  border-radius: 0.5rem;
+}
+
+.form-wizard__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.form-wizard__nav .btn--outline {
+  margin-right: auto;
+}
+
+.form-wizard__nav [hidden],
+.form-wizard__nav .form-wizard__btn--hidden {
+  display: none !important;
+}
+
+@media (max-width: 479px) {
+  .form-wizard__nav {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .form-wizard__nav .btn--outline {
+    margin-right: 0;
+  }
+  .form-wizard__nav .btn {
+    width: 100%;
   }
 }
 
@@ -473,7 +694,7 @@
 
 @media (min-width: 1024px) {
   .process-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -481,7 +702,7 @@
   font-family: var(--font-display);
   font-size: 3rem;
   font-weight: 700;
-  color: rgba(220, 28, 46, 0.2);
+  color: var(--color-red-soft);
   line-height: 1;
 }
 

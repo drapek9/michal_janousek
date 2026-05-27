@@ -1,5 +1,5 @@
 /**
- * Scroll animace — fade-in při vstupu do viewportu
+ * Scroll animace - fade-in při vstupu do viewportu
  */
 
 function observeFadeIn(root = document) {

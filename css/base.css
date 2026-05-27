@@ -108,6 +108,10 @@ textarea {
   padding: var(--space-section) 0;
 }
 
+#kontaktni-formular {
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
 .section--cream {
   background: var(--color-cream);
 }

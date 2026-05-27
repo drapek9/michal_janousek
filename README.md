@@ -1,4 +1,4 @@
-# Michal Janoušek — Realitní makléř RE/MAX Age
+# Michal Janoušek - Realitní makléř RE/MAX Age
 
 Statický vícestránkový web v čistém **HTML, CSS a JavaScriptu** (bez Reactu a TypeScriptu).
 
@@ -22,7 +22,7 @@ Web poběží typicky na `http://localhost:3000`.
 ├── nemovitost.html         Detail (?slug=...)
 ├── reference.html          Reference klientů
 ├── kontakt.html            Kontakt + mapa
-├── odhad-zdarma.html       Landing page — odhad zdarma (priorita)
+├── odhad-zdarma.html       Landing page - odhad zdarma (priorita)
 ├── css/
 │   ├── variables.css       Design tokeny
 │   ├── base.css            Reset, typografie, utility
@@ -46,7 +46,7 @@ Web poběží typicky na `http://localhost:3000`.
 
 - **Kontakty a SEO:** `js/config.js`
 - **Nemovitosti, reference, FAQ:** `js/data.js`
-- **Fotografie makléře:** nahraďte URL v HTML a `SITE.brokerPhoto` v `config.js`
+- **Fotografie makléře:** `images/fotka_michal_janousek.png` (HTML + `SITE.brokerPhoto` v `config.js`)
 
 ## Formuláře
 

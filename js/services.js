@@ -1,5 +1,5 @@
 /**
- * Vykreslení služeb na stránce Služby
+ * Vykreslení služeb (stránka Služby + náhled na homepage)
  */
 
 const SERVICE_ICONS = {
@@ -12,23 +12,29 @@ const SERVICE_ICONS = {
   financovani: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>`,
 };
 
-function initServices() {
-  const grid = document.getElementById("services-grid");
-  if (!grid) return;
-
-  grid.innerHTML = SERVICES.map(
-    (s) => `
+function renderServiceCard(s, headingTag) {
+  const tag = headingTag || "h2";
+  return `
     <article class="service-card fade-in">
       <div class="feature-card__icon">${SERVICE_ICONS[s.id] || SERVICE_ICONS.prodej}</div>
-      <h2 class="feature-card__title">${s.title}</h2>
+      <${tag} class="feature-card__title">${s.title}</${tag}>
       <p class="feature-card__text">${s.description}</p>
-      <p class="service-card__benefit">${s.benefit}</p>
-      <a href="${s.href}" class="btn btn--outline btn--sm">${s.cta}</a>
     </article>
-  `
-  ).join("");
+  `;
+}
 
-  if (typeof observeFadeIn === "function") observeFadeIn(grid);
+function renderServicesGrid(container) {
+  const limit = parseInt(container.dataset.limit, 10);
+  const items = Number.isFinite(limit) && limit > 0 ? SERVICES.slice(0, limit) : SERVICES;
+  const headingTag = container.dataset.heading || "h2";
+
+  container.innerHTML = items.map((s) => renderServiceCard(s, headingTag)).join("");
+
+  if (typeof observeFadeIn === "function") observeFadeIn(container);
+}
+
+function initServices() {
+  document.querySelectorAll("[data-services-grid]").forEach(renderServicesGrid);
 }
 
 document.addEventListener("DOMContentLoaded", initServices);

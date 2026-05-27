@@ -3,19 +3,13 @@
  */
 
 function testimonialCardHtml(t) {
-  const avatar = t.image
-    ? `<img class="testimonial__avatar" src="${t.image}" alt="" loading="lazy">`
-    : `<div class="testimonial__avatar">${t.name.charAt(0)}</div>`;
-
   return `
     <blockquote class="testimonial fade-in">
-      ${starsHtml(t.rating)}
       <p class="testimonial__text">&ldquo;${t.text}&rdquo;</p>
       <footer class="testimonial__author">
-        ${avatar}
         <div>
           <cite class="testimonial__name">${t.name}</cite>
-          <p class="testimonial__meta">${t.location}${t.propertyType ? " · " + t.propertyType : ""}</p>
+          <p class="testimonial__meta">${t.location}</p>
         </div>
       </footer>
     </blockquote>

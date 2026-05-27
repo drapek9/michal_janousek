@@ -1,5 +1,5 @@
 /**
- * Data nemovitostí, referencí, služeb — připraveno pro napojení na CMS/API
+ * Data nemovitostí, referencí, služeb - připraveno pro napojení na CMS/API
  */
 
 const PROPERTIES = [
@@ -13,12 +13,8 @@ const PROPERTIES = [
     status: "available",
     area: 78,
     rooms: "3+kk",
-    image:
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80",
-    images: [
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80",
-    ],
+    image: "https://thermo-plus.cz/img/projekty/filip/vizualizace/1.jpg",
+    images: ["https://thermo-plus.cz/img/projekty/filip/vizualizace/1.jpg"],
     description:
       "Krásný zrekonstruovaný byt v klidné části Vinohrad. Prostorná obývací část s francouzskými okny, moderní kuchyně a dvě ložnice.",
     features: ["Balkon", "Sklep", "Výtah", "Parkování"],
@@ -37,9 +33,9 @@ const PROPERTIES = [
     area: 165,
     rooms: "5+1",
     image:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
+      "https://www.prodom.cz/userfiles/products/PREMIUM%20215/rodinny_dum_premium215_foto.jpg",
     images: [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+      "https://www.prodom.cz/userfiles/products/PREMIUM%20215/rodinny_dum_premium215_foto.jpg",
     ],
     description:
       "Prostorný rodinný dům s velkou zahradou a garáží. Klidná lokalita s výbornou dostupností.",
@@ -57,11 +53,8 @@ const PROPERTIES = [
     status: "available",
     area: 52,
     rooms: "2+kk",
-    image:
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80",
-    images: [
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80",
-    ],
+    image: "https://www.rodinne-bydleni.cz/katalog/karel-1.jpg",
+    images: ["https://www.rodinne-bydleni.cz/katalog/karel-1.jpg"],
     description:
       "Světlý byt v centru Ústí s panoramatickým výhledem na řeku. Kompletní rekonstrukce.",
     features: ["Výtah", "Sklep", "Zasklená lodžie"],
@@ -81,9 +74,9 @@ const PROPERTIES = [
     area: 95,
     rooms: "4+1",
     image:
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
+      "https://www.woodsystem.cz/data/images-xl-4-3/2668-321-rodinny-dum-3-1-drevostavba-s-pudou-nwj8323.jpg",
     images: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
+      "https://www.woodsystem.cz/data/images-xl-4-3/2668-321-rodinny-dum-3-1-drevostavba-s-pudou-nwj8323.jpg",
     ],
     description: "Úspěšně prodaný byt v atraktivní lokalitě Smíchova.",
     features: ["Balkon", "Sklep"],
@@ -101,9 +94,9 @@ const PROPERTIES = [
     area: 140,
     rooms: "4+kk",
     image:
-      "https://images.unsplash.com/photo-1605276374101-dea5814f31b3?w=800&q=80",
+      "https://www.alfahaus.cz/media/thumbs/stavby/thumb_1150x800_1-21-rodinny-dum-4-kk.jpg?v=1778059124",
     images: [
-      "https://images.unsplash.com/photo-1605276374101-dea5814f31b3?w=1200&q=80",
+      "https://www.alfahaus.cz/media/thumbs/stavby/thumb_1150x800_1-21-rodinny-dum-4-kk.jpg?v=1778059124",
     ],
     description: "Rodinný dům prodaný za 14 dní od zahájení prodeje.",
     features: ["Zahrada", "Garáž"],
@@ -121,9 +114,9 @@ const PROPERTIES = [
     area: 72,
     rooms: "3+1",
     image:
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80",
+      "https://www.fndstavby.cz/www/upload/products/images/20220314095858760/20220314095858760.webp",
     images: [
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80",
+      "https://www.fndstavby.cz/www/upload/products/images/20220314095858760/20220314095858760.webp",
     ],
     description:
       "Byt prodaný nad požadovanou cenu díky kvalitní prezentaci.",
@@ -175,7 +168,7 @@ const TESTIMONIALS = [
     id: "5",
     name: "Pavel Černý",
     location: "Praha",
-    text: "Odhad zdarma mi otevřel oči — online kalkulačky ukazovaly úplně jinou cenu. Za týden jsme měli kupce.",
+    text: "Odhad zdarma mi otevřel oči - online kalkulačky ukazovaly úplně jinou cenu. Za týden jsme měli kupce.",
     rating: 5,
     propertyType: "Odhad a prodej",
   },
@@ -258,27 +251,19 @@ const SERVICES = [
 const FAQ = [
   {
     q: "Je odhad opravdu zdarma a nezávazný?",
-    a: "Ano. Odhad ceny je zcela zdarma a nezavazný. Nemusíte se rozhodnout pro spolupráci — získáte jen užitečné informace o tržní ceně vaší nemovitosti.",
+    a: "Ano. Odhad ceny je zcela zdarma a nezavazný. Nemusíte se rozhodnout pro spolupráci - získáte jen užitečné informace o tržní ceně vaší nemovitosti.",
   },
   {
     q: "Jak dlouho trvá nacenění?",
-    a: "Po domluvě termínu přijdu osobně k nemovitosti. Prohlídka trvá obvykle 30–60 minut. Písemný odhad vám zašlu do 48 hodin.",
+    a: "Po odeslání formuláře odhad připravím na základě vašich údajů a znalosti trhu. Obvykle vám ho zašlu do několika pracovních dnů – přesný termín vždy upřesním po domluvě.",
   },
   {
     q: "Proč nestačí online kalkulačka?",
     a: "Online kalkulačky pracují s průměrnými daty a nevidí stav ani specifika vaší nemovitosti. Často ukazují cenu o 10–20 % od reality.",
   },
   {
-    q: "V jakých lokalitách působíte?",
-    a: "Působím ve Středočeském kraji, Praze a Ústeckém kraji. Pro nemovitosti mimo tyto oblasti mě kontaktujte.",
-  },
-  {
     q: "Co se stane po odeslání formuláře?",
-    a: "Ozvu se vám a domluvíme termín osobní prohlídky. Žádný spam.",
-  },
-  {
-    q: "Musím být při prohlídce přítomen?",
-    a: "Ideálně ano — můžete mi ukázat detaily a položit otázky. Pokud to není možné, domluvíme alternativu.",
+    a: "Ozvu se vám, případně si upřesníme údaje o nemovitosti. Poté odhad připravím a zašlu vám ho zdarma a nezávazně. Žádný spam.",
   },
 ];
 
@@ -286,7 +271,7 @@ const TIMELINE = [
   { year: "2018", title: "Vstup do realit", description: "Začátek kariéry, první úspěšné prodeje." },
   { year: "2020", title: "RE/MAX Age", description: "Připojení k RE/MAX Age a celosvětové síti." },
   { year: "2022", title: "Specializace na prodej", description: "Zaměření na rodinné domy a byty ve Středočeském kraji." },
-  { year: "2024", title: "Rozšíření působnosti", description: "Praha a Ústecký kraj — kompletní pokrytí regionů." },
+  { year: "2024", title: "Rozšíření působnosti", description: "Praha a Ústecký kraj - kompletní pokrytí regionů." },
   { year: "2025", title: "100+ spokojených klientů", description: "Přes stovku úspěšných transakcí a dlouhodobých vztahů." },
 ];
 

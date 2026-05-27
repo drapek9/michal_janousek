@@ -10,7 +10,7 @@ function propertyCardHtml(property) {
 
   return `
     <article class="card fade-in">
-      <a href="nemovitost.html?slug=${property.slug}">
+      <div class="card__inner">
         <div class="card__image">
           <img src="${property.image}" alt="${property.title}" loading="lazy" width="400" height="300">
           <span class="card__badge card__badge--${isSold ? "sold" : "available"}">${isSold ? "Prodáno" : "V nabídce"}</span>
@@ -23,10 +23,9 @@ function propertyCardHtml(property) {
               <p class="card__price">${priceDisplay}</p>
               <p class="card__meta">${isSold ? formatPrice(property.price) : `${property.area} m²${property.rooms ? " · " + property.rooms : ""}`}</p>
             </div>
-            <span class="card__link">Detail ${ICONS.arrowRight}</span>
           </div>
         </div>
-      </a>
+      </div>
     </article>
   `;
 }
@@ -43,7 +42,9 @@ function initPropertyListing() {
   if (!grid) return;
 
   const params = new URLSearchParams(window.location.search);
-  let filter = params.get("filter") || "all";
+  const paramFilter = params.get("filter");
+  let filter =
+    paramFilter === "sold" || paramFilter === "available" ? paramFilter : "available";
 
   const tabs = document.querySelectorAll(".filter-tab");
   tabs.forEach((tab) => {
@@ -56,10 +57,7 @@ function initPropertyListing() {
   });
 
   function applyFilter() {
-    const filtered =
-      filter === "all"
-        ? PROPERTIES
-        : PROPERTIES.filter((p) => p.status === filter);
+    const filtered = PROPERTIES.filter((p) => p.status === filter);
     if (filtered.length === 0) {
       grid.innerHTML = '<p class="text-center text-body">V této kategorii zatím nejsou žídné nemovitosti.</p>';
     } else {

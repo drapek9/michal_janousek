@@ -39,14 +39,17 @@ function renderHeader() {
           <span id="menu-icon">${ICONS.menu}</span>
         </button>
       </div>
-      <nav class="nav-mobile" id="nav-mobile" aria-label="Mobilní navigace">
-        ${SITE.nav.map((l) => navLinkHtml(l, current)).join("")}
-        <div class="nav-mobile__footer">
-          <a href="tel:${SITE.phoneHref}" class="header-phone" style="padding:0 1rem 1rem">${ICONS.phone} ${SITE.phone}</a>
-          <a href="odhad-zdarma.html" class="btn btn--primary btn--lg btn--block">Nezávazný odhad zdarma</a>
-        </div>
-      </nav>
     </header>
+    <nav class="nav-mobile" id="nav-mobile" aria-label="Mobilní navigace" aria-hidden="true">
+      <div class="nav-mobile__links">
+        ${SITE.nav.map((l) => navLinkHtml(l, current)).join("")}
+      </div>
+      <div class="nav-mobile__footer">
+        <a href="tel:${SITE.phoneHref}" class="header-phone nav-mobile__phone">${ICONS.phone} ${SITE.phone}</a>
+        <a href="odhad-zdarma.html" class="btn btn--primary btn--lg btn--block">Nezávazný odhad zdarma</a>
+      </div>
+    </nav>
+    <div class="nav-mobile__backdrop" id="nav-mobile-backdrop" aria-hidden="true"></div>
     <div class="floating-cta" id="floating-cta">
       <a href="odhad-zdarma.html" class="floating-cta__btn">${ICONS.calculator}<span>Odhad zdarma</span></a>
       <button type="button" class="floating-cta__close" id="floating-cta-close" aria-label="Skrýt">${ICONS.close}</button>
@@ -65,8 +68,10 @@ function renderFooter() {
         <div class="footer-grid">
           <div class="footer-brand">
             <span class="logo__name">${SITE.name}</span>
-            <span class="logo__tag">${SITE.office}</span>
-            <p>Osobní realitní makléř. Pomohu vám prodat nebo pronajmout nemovitost za maximum — s lidským přístupem a kompletním servisem.</p>
+            <div class="footer-brand__logo">
+              <img src="images/remax_age.png" alt="RE/MAX Age" width="120" height="48" loading="lazy">
+            </div>
+            <p>Osobní realitní makléř. Pomohu vám prodat nebo pronajmout nemovitost za maximum - s lidským přístupem a kompletním servisem.</p>
             <a href="odhad-zdarma.html" class="btn btn--primary" style="margin-top:1.5rem">Odhad nemovitosti zdarma</a>
           </div>
           <div class="footer-links">
@@ -77,12 +82,19 @@ function renderFooter() {
             <h4 class="footer-heading">Kontakt</h4>
             <a href="tel:${SITE.phoneHref}">${SITE.phone}</a>
             <a href="mailto:${SITE.email}">${SITE.email}</a>
-            <p style="margin-top:0.5rem;color:rgba(255,255,255,0.7);font-size:0.9375rem">${SITE.regions.join(" · ")}</p>
+            <p style="margin-top:0.5rem;color:rgba(255,255,255,0.7);font-size:0.9375rem">${SITE.address.full}</p>
+            <p style="margin-top:0.25rem;color:rgba(255,255,255,0.7);font-size:0.9375rem">${SITE.regions.join(" · ")}</p>
           </div>
         </div>
         <div class="footer-bottom">
-          <p>© ${new Date().getFullYear()} ${SITE.name} · ${SITE.office}</p>
-          <p>Nezávislý realitní makléř v síti RE/MAX</p>
+          <div class="footer-bottom__row">
+            <p>© ${new Date().getFullYear()} ${SITE.name}. Všechna práva vyhrazena.</p>
+            <p>Nezávislý realitní makléř v síti RE/MAX</p>
+          </div>
+          <p class="footer-credit">
+            Web vytvořil
+            <a href="https://simondrapal.cz/" class="footer-credit__link" target="_blank" rel="noopener noreferrer">Šimon Drápal</a>
+          </p>
         </div>
       </div>
     </footer>
@@ -111,20 +123,32 @@ function initLayout() {
   });
 
   // Mobile menu
+  const mobileBackdrop = document.getElementById("nav-mobile-backdrop");
+
+  function setMobileMenuOpen(open) {
+    if (!mobileNav || !toggle) return;
+    mobileNav.classList.toggle("is-open", open);
+    mobileNav.setAttribute("aria-hidden", open ? "false" : "true");
+    toggle.setAttribute("aria-expanded", open);
+    toggle.setAttribute("aria-label", open ? "Zavřít menu" : "Menu");
+    if (header) header.classList.toggle("is-menu-open", open);
+    document.body.classList.toggle("menu-open", open);
+    if (mobileBackdrop) {
+      mobileBackdrop.classList.toggle("is-visible", open);
+      mobileBackdrop.setAttribute("aria-hidden", open ? "false" : "true");
+    }
+    if (menuIcon) menuIcon.innerHTML = open ? ICONS.close : ICONS.menu;
+  }
+
   if (toggle && mobileNav) {
     toggle.addEventListener("click", () => {
-      const open = mobileNav.classList.toggle("is-open");
-      toggle.setAttribute("aria-expanded", open);
-      document.body.classList.toggle("menu-open", open);
-      if (menuIcon) menuIcon.innerHTML = open ? ICONS.close : ICONS.menu;
+      setMobileMenuOpen(!mobileNav.classList.contains("is-open"));
     });
+    if (mobileBackdrop) {
+      mobileBackdrop.addEventListener("click", () => setMobileMenuOpen(false));
+    }
     mobileNav.querySelectorAll("a").forEach((a) => {
-      a.addEventListener("click", () => {
-        mobileNav.classList.remove("is-open");
-        document.body.classList.remove("menu-open");
-        toggle.setAttribute("aria-expanded", "false");
-        if (menuIcon) menuIcon.innerHTML = ICONS.menu;
-      });
+      a.addEventListener("click", () => setMobileMenuOpen(false));
     });
   }
 

@@ -14,7 +14,14 @@ const PROPERTIES = [
     area: 78,
     rooms: "3+kk",
     image: "https://thermo-plus.cz/img/projekty/filip/vizualizace/1.jpg",
-    images: ["https://thermo-plus.cz/img/projekty/filip/vizualizace/1.jpg"],
+    images: [
+      "https://thermo-plus.cz/img/projekty/filip/vizualizace/1.jpg",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef9374f59?w=1200&q=80",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80",
+    ],
     description:
       "Krásný zrekonstruovaný byt v klidné části Vinohrad. Prostorná obývací část s francouzskými okny, moderní kuchyně a dvě ložnice.",
     features: ["Balkon", "Sklep", "Výtah", "Parkování"],
@@ -36,6 +43,9 @@ const PROPERTIES = [
       "https://www.prodom.cz/userfiles/products/PREMIUM%20215/rodinny_dum_premium215_foto.jpg",
     images: [
       "https://www.prodom.cz/userfiles/products/PREMIUM%20215/rodinny_dum_premium215_foto.jpg",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
     ],
     description:
       "Prostorný rodinný dům s velkou zahradou a garáží. Klidná lokalita s výbornou dostupností.",
@@ -54,7 +64,12 @@ const PROPERTIES = [
     area: 52,
     rooms: "2+kk",
     image: "https://www.rodinne-bydleni.cz/katalog/karel-1.jpg",
-    images: ["https://www.rodinne-bydleni.cz/katalog/karel-1.jpg"],
+    images: [
+      "https://www.rodinne-bydleni.cz/katalog/karel-1.jpg",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80",
+      "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=1200&q=80",
+    ],
     description:
       "Světlý byt v centru Ústí s panoramatickým výhledem na řeku. Kompletní rekonstrukce.",
     features: ["Výtah", "Sklep", "Zasklená lodžie"],
@@ -77,6 +92,9 @@ const PROPERTIES = [
       "https://www.woodsystem.cz/data/images-xl-4-3/2668-321-rodinny-dum-3-1-drevostavba-s-pudou-nwj8323.jpg",
     images: [
       "https://www.woodsystem.cz/data/images-xl-4-3/2668-321-rodinny-dum-3-1-drevostavba-s-pudou-nwj8323.jpg",
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cd7e?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1200&q=80",
     ],
     description: "Úspěšně prodaný byt v atraktivní lokalitě Smíchova.",
     features: ["Balkon", "Sklep"],
@@ -97,6 +115,9 @@ const PROPERTIES = [
       "https://www.alfahaus.cz/media/thumbs/stavby/thumb_1150x800_1-21-rodinny-dum-4-kk.jpg?v=1778059124",
     images: [
       "https://www.alfahaus.cz/media/thumbs/stavby/thumb_1150x800_1-21-rodinny-dum-4-kk.jpg?v=1778059124",
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80",
     ],
     description: "Rodinný dům prodaný za 14 dní od zahájení prodeje.",
     features: ["Zahrada", "Garáž"],
@@ -117,6 +138,9 @@ const PROPERTIES = [
       "https://www.fndstavby.cz/www/upload/products/images/20220314095858760/20220314095858760.webp",
     images: [
       "https://www.fndstavby.cz/www/upload/products/images/20220314095858760/20220314095858760.webp",
+      "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=1200&q=80",
+      "https://images.unsplash.com/photo-1560185007-5f971ccc7afe?w=1200&q=80",
+      "https://images.unsplash.com/photo-1574643151659-04c27e1d4369?w=1200&q=80",
     ],
     description:
       "Byt prodaný nad požadovanou cenu díky kvalitní prezentaci.",

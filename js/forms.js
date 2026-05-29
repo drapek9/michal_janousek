@@ -1,10 +1,8 @@
 /**
- * Formuláře - odhad zdarma (vícekrokový) a kontakt
+ * Formuláře - odhad zdarma a kontakt
  */
 
-const ESTIMATE_TOTAL_STEPS = 5;
-
-const ESTIMATE_STEP_TITLES = [
+const ESTIMATE_SECTION_TITLES = [
   "Typ nemovitosti",
   "Kde se nemovitost nachází",
   "Vlastnictví nemovitosti",
@@ -13,9 +11,9 @@ const ESTIMATE_STEP_TITLES = [
 ];
 
 const ESTIMATE_PROPERTY_TYPES = [
-  { value: "byt", label: "Byt" },
-  { value: "dum", label: "Dům" },
-  { value: "pozemek", label: "Pozemek" },
+  { value: "byt", label: "Byt", image: "images/byt_dotaznik.png" },
+  { value: "dum", label: "Dům", image: "images/dum_dotaznik.png" },
+  { value: "pozemek", label: "Pozemek", image: "images/pozemek_dotaznik.png" },
 ];
 
 const ESTIMATE_DISPOSITIONS = [
@@ -45,8 +43,16 @@ const ESTIMATE_OWNERSHIP_TYPES = [
 
 function estimateFormHtml(options = {}) {
   const { hero = false, id = "estimate-form" } = options;
-  const typeOptions = ESTIMATE_PROPERTY_TYPES.map(
-    (t) => `<option value="${t.value}">${t.label}</option>`
+  const typeCards = ESTIMATE_PROPERTY_TYPES.map(
+    (t) => `
+    <label class="form-type-card">
+      <input type="radio" name="type" value="${t.value}" class="form-type-card__input">
+      <span class="form-type-card__check" aria-hidden="true">${ICONS.check}</span>
+      <span class="form-type-card__icon">
+        <img src="${t.image}" alt="" width="300" height="300" loading="lazy" decoding="async">
+      </span>
+      <span class="form-type-card__label">${t.label}</span>
+    </label>`
   ).join("");
   const dispositionOptions = ESTIMATE_DISPOSITIONS.map(
     (d) => `<option value="${d}">${d}</option>`
@@ -63,112 +69,102 @@ function estimateFormHtml(options = {}) {
   ).join("");
 
   return `
-    <form class="form-card form-wizard" id="${id}" data-form="estimate" data-wizard-step="1">
-      ${hero ? `<div class="form-card__title">Nezávazný odhad zdarma</div><p class="form-card__subtitle">Vyplňte formulář krok po kroku - ozvu se vám</p>` : ""}
+    <form class="form-card" id="${id}" data-form="estimate">
+      ${hero ? `<div class="form-card__title">Nezávazný odhad zdarma</div><p class="form-card__subtitle">Vyplňte formulář – ozvu se vám</p>` : ""}
 
-      <div class="form-wizard__header">
-        <p class="form-wizard__counter">
-          Krok <strong class="form-wizard__current">1</strong> z <strong>${ESTIMATE_TOTAL_STEPS}</strong>
-        </p>
-        <div class="form-wizard__bar" role="progressbar" aria-valuemin="1" aria-valuemax="${ESTIMATE_TOTAL_STEPS}" aria-valuenow="1">
-          <div class="form-wizard__fill" style="width: ${100 / ESTIMATE_TOTAL_STEPS}%"></div>
+      <fieldset class="form-fieldset">
+        <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[0]}</legend>
+        <div class="form-type-cards" role="radiogroup" aria-label="Typ nemovitosti">
+          ${typeCards}
         </div>
-        <h3 class="form-wizard__step-title">${ESTIMATE_STEP_TITLES[0]}</h3>
-      </div>
+      </fieldset>
 
-      <div class="form-wizard__panels">
-        <!-- Krok 1 -->
-        <div class="form-wizard__panel is-active" data-wizard-panel="1">
+      <div class="form-estimate-body" data-estimate-body>
+        <div class="form-estimate-body__inner">
+      <fieldset class="form-fieldset">
+        <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[1]}</legend>
+        <div class="form-grid form-grid--2">
           <div class="form-group">
-            <label for="${id}-type">Typ nemovitosti *</label>
-            <select class="form-input" id="${id}-type" name="type">
-              <option value="">Vyberte typ</option>${typeOptions}
+            <label for="${id}-city">Město *</label>
+            <input class="form-input" id="${id}-city" name="city" type="text" placeholder="např. Praha">
+          </div>
+          <div class="form-group">
+            <label for="${id}-street">Ulice *</label>
+            <input class="form-input" id="${id}-street" name="street" type="text" placeholder="např. Vinohradská 12">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[2]}</legend>
+        <span class="form-label">Jste vlastníkem nemovitosti? *</span>
+        <div class="form-radio-group">${ownerStatusRadios}</div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[3]}</legend>
+        <div class="form-grid form-grid--2">
+          <div class="form-group" data-estimate-field="dispozice">
+            <label for="${id}-dispozice">Dispozice *</label>
+            <select class="form-input" id="${id}-dispozice" name="dispozice">
+              <option value="">Vyberte dispozici</option>${dispositionOptions}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="${id}-area">Plocha (m²) *</label>
+            <input class="form-input" id="${id}-area" name="area" type="number" min="1" placeholder="např. 75">
+          </div>
+          <div class="form-group form-group--full" data-estimate-field="vlastnictvi">
+            <label for="${id}-ownership">Druh vlastnictví *</label>
+            <select class="form-input" id="${id}-ownership" name="ownership">
+              <option value="">Vyberte typ vlastnictví</option>${ownershipOptions}
             </select>
           </div>
         </div>
+        <p class="form-hint" data-estimate-hint="pozemek" hidden>Pro pozemek vyplňte pouze plochu v m².</p>
+      </fieldset>
 
-        <!-- Krok 2 -->
-        <div class="form-wizard__panel" data-wizard-panel="2" hidden>
-          <p class="form-wizard__panel-desc">Kde se nemovitost nachází?</p>
-          <div class="form-grid form-grid--2">
-            <div class="form-group">
-              <label for="${id}-city">Město *</label>
-              <input class="form-input" id="${id}-city" name="city" type="text" placeholder="např. Praha">
-            </div>
-            <div class="form-group">
-              <label for="${id}-street">Ulice *</label>
-              <input class="form-input" id="${id}-street" name="street" type="text" placeholder="např. Vinohradská 12">
-            </div>
+      <fieldset class="form-fieldset">
+        <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[4]}</legend>
+        <div class="form-grid form-grid--2">
+          <div class="form-group form-group--full">
+            <label for="${id}-name">Jméno a příjmení *</label>
+            <input class="form-input" id="${id}-name" name="name" type="text" placeholder="Jan Novák" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="${id}-email">E-mail *</label>
+            <input class="form-input" id="${id}-email" name="email" type="email" placeholder="vas@email.cz" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="${id}-phone">Telefon *</label>
+            <input class="form-input" id="${id}-phone" name="phone" type="tel" placeholder="+420 123 456 789" autocomplete="tel">
           </div>
         </div>
-
-        <!-- Krok 3 -->
-        <div class="form-wizard__panel" data-wizard-panel="3" hidden>
-          <span class="form-label">Jste vlastníkem nemovitosti? *</span>
-          <div class="form-radio-group">${ownerStatusRadios}</div>
-        </div>
-
-        <!-- Krok 4 -->
-        <div class="form-wizard__panel" data-wizard-panel="4" hidden>
-          <div class="form-grid form-grid--2">
-            <div class="form-group" data-estimate-field="dispozice">
-              <label for="${id}-dispozice">Dispozice *</label>
-              <select class="form-input" id="${id}-dispozice" name="dispozice">
-                <option value="">Vyberte dispozici</option>${dispositionOptions}
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="${id}-area">Plocha (m²) *</label>
-              <input class="form-input" id="${id}-area" name="area" type="number" min="1" placeholder="např. 75">
-            </div>
-            <div class="form-group form-group--full" data-estimate-field="vlastnictvi">
-              <label for="${id}-ownership">Druh vlastnictví *</label>
-              <select class="form-input" id="${id}-ownership" name="ownership">
-                <option value="">Vyberte typ vlastnictví</option>${ownershipOptions}
-              </select>
-            </div>
-          </div>
-          <p class="form-wizard__hint" data-estimate-hint="pozemek" hidden>Pro pozemek vyplňte pouze plochu v m².</p>
-        </div>
-
-        <!-- Krok 5 -->
-        <div class="form-wizard__panel" data-wizard-panel="5" hidden>
-          <div class="form-grid form-grid--2">
-            <div class="form-group form-group--full">
-              <label for="${id}-name">Jméno a příjmení *</label>
-              <input class="form-input" id="${id}-name" name="name" type="text" placeholder="Jan Novák" autocomplete="name">
-            </div>
-            <div class="form-group">
-              <label for="${id}-email">E-mail *</label>
-              <input class="form-input" id="${id}-email" name="email" type="email" placeholder="vas@email.cz" autocomplete="email">
-            </div>
-            <div class="form-group">
-              <label for="${id}-phone">Telefon *</label>
-              <input class="form-input" id="${id}-phone" name="phone" type="tel" placeholder="+420 123 456 789" autocomplete="tel">
-            </div>
-          </div>
+      </fieldset>
         </div>
       </div>
 
-      <p class="form-wizard__error" role="alert" hidden></p>
-
-      <div class="form-wizard__nav">
-        <button type="button" class="btn btn--outline" data-wizard-prev hidden>Zpět</button>
-        <button type="button" class="btn btn--primary" data-wizard-next>Další</button>
-        <button type="submit" class="btn btn--primary btn--lg" data-wizard-submit hidden>${ICONS.send} Odeslat žádost o odhad</button>
+      <div class="form-estimate-actions">
+        <p class="form-error" role="alert" hidden></p>
+        <button type="submit" class="btn btn--primary btn--lg">${ICONS.send} Odeslat žádost o odhad</button>
+        <p class="form-note">Odesláním souhlasíte se zpracováním údajů pro účely kontaktu. Údaje nejsou předávány třetím stranám.</p>
       </div>
-
-      <p class="form-note">Odesláním souhlasíte se zpracováním údajů pro účely kontaktu. Údaje nejsou předávány třetím stranám.</p>
     </form>
   `;
 }
 
+function getEstimateType(form) {
+  return form.querySelector('[name="type"]:checked');
+}
+
 function isEstimatePozemek(form) {
-  const type = form.querySelector('[name="type"]');
+  const type = getEstimateType(form);
   return type && type.value === "pozemek";
 }
 
-function updateEstimateStep4Fields(form) {
+function updateEstimateDetailFields(form) {
+  if (!getEstimateType(form)) return;
+
   const isPozemek = isEstimatePozemek(form);
   const dispoziceField = form.querySelector('[data-estimate-field="dispozice"]');
   const vlastnictviField = form.querySelector('[data-estimate-field="vlastnictvi"]');
@@ -179,8 +175,33 @@ function updateEstimateStep4Fields(form) {
   if (hint) hint.hidden = !isPozemek;
 }
 
-function validateEstimateStep(form, step) {
-  const errorEl = form.querySelector(".form-wizard__error");
+function clearEstimateFormError(form) {
+  const errorEl = form.querySelector(".form-error");
+  if (errorEl) {
+    errorEl.textContent = "";
+    errorEl.hidden = true;
+  }
+}
+
+function updateEstimateFormVisibility(form) {
+  const body = form.querySelector("[data-estimate-body]");
+  const type = getEstimateType(form);
+  if (!body) return;
+
+  const isOpen = Boolean(type);
+  body.classList.toggle("is-open", isOpen);
+  body.setAttribute("aria-hidden", isOpen ? "false" : "true");
+  if (isOpen) body.removeAttribute("inert");
+  else body.setAttribute("inert", "");
+
+  if (isOpen) {
+    clearEstimateFormError(form);
+    updateEstimateDetailFields(form);
+  }
+}
+
+function validateEstimateForm(form) {
+  const errorEl = form.querySelector(".form-error");
 
   function fail(message) {
     if (errorEl) {
@@ -192,125 +213,48 @@ function validateEstimateStep(form, step) {
 
   if (errorEl) errorEl.hidden = true;
 
-  if (step === 1) {
-    const type = form.querySelector('[name="type"]');
-    if (!type || !type.value) return fail("Vyberte typ nemovitosti.");
+  const type = getEstimateType(form);
+  if (!type) return fail("Vyberte typ nemovitosti.");
+
+  const city = form.querySelector('[name="city"]');
+  const street = form.querySelector('[name="street"]');
+  if (!city?.value.trim()) return fail("Vyplňte město.");
+  if (!street?.value.trim()) return fail("Vyplňte ulici.");
+
+  const owner = form.querySelector('[name="owner_status"]:checked');
+  if (!owner) return fail("Vyberte, zda jste vlastníkem nemovitosti.");
+
+  const area = form.querySelector('[name="area"]');
+  if (!area?.value || Number(area.value) < 1) return fail("Vyplňte plochu v m².");
+
+  if (!isEstimatePozemek(form)) {
+    const dispozice = form.querySelector('[name="dispozice"]');
+    const ownership = form.querySelector('[name="ownership"]');
+    if (!dispozice?.value) return fail("Vyberte dispozici.");
+    if (!ownership?.value) return fail("Vyberte druh vlastnictví.");
   }
 
-  if (step === 2) {
-    const city = form.querySelector('[name="city"]');
-    const street = form.querySelector('[name="street"]');
-    if (!city?.value.trim()) return fail("Vyplňte město.");
-    if (!street?.value.trim()) return fail("Vyplňte ulici.");
-  }
-
-  if (step === 3) {
-    const owner = form.querySelector('[name="owner_status"]:checked');
-    if (!owner) return fail("Vyberte, zda jste vlastníkem nemovitosti.");
-  }
-
-  if (step === 4) {
-    const area = form.querySelector('[name="area"]');
-    if (!area?.value || Number(area.value) < 1) return fail("Vyplňte plochu v m².");
-
-    if (!isEstimatePozemek(form)) {
-      const dispozice = form.querySelector('[name="dispozice"]');
-      const ownership = form.querySelector('[name="ownership"]');
-      if (!dispozice?.value) return fail("Vyberte dispozici.");
-      if (!ownership?.value) return fail("Vyberte druh vlastnictví.");
-    }
-  }
-
-  if (step === 5) {
-    const name = form.querySelector('[name="name"]');
-    const email = form.querySelector('[name="email"]');
-    const phone = form.querySelector('[name="phone"]');
-    if (!name?.value.trim()) return fail("Vyplňte jméno a příjmení.");
-    if (!email?.value.trim()) return fail("Vyplňte e-mail.");
-    if (!phone?.value.trim()) return fail("Vyplňte telefon.");
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email.value.trim())) return fail("Zadejte platný e-mail.");
-  }
+  const name = form.querySelector('[name="name"]');
+  const email = form.querySelector('[name="email"]');
+  const phone = form.querySelector('[name="phone"]');
+  if (!name?.value.trim()) return fail("Vyplňte jméno a příjmení.");
+  if (!email?.value.trim()) return fail("Vyplňte e-mail.");
+  if (!phone?.value.trim()) return fail("Vyplňte telefon.");
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email.value.trim())) return fail("Zadejte platný e-mail.");
 
   return true;
 }
 
-function setEstimateWizardStep(form, step) {
-  const panels = form.querySelectorAll("[data-wizard-panel]");
-  const currentEl = form.querySelector(".form-wizard__current");
-  const titleEl = form.querySelector(".form-wizard__step-title");
-  const fillEl = form.querySelector(".form-wizard__fill");
-  const barEl = form.querySelector(".form-wizard__bar");
-  const prevBtn = form.querySelector("[data-wizard-prev]");
-  const nextBtn = form.querySelector("[data-wizard-next]");
-  const submitBtn = form.querySelector("[data-wizard-submit]");
-  const errorEl = form.querySelector(".form-wizard__error");
+function initEstimateForm(form) {
+  if (form.dataset.estimateInitialized === "true") return;
+  form.dataset.estimateInitialized = "true";
 
-  form.dataset.wizardStep = String(step);
-  if (errorEl) errorEl.hidden = true;
+  updateEstimateFormVisibility(form);
 
-  panels.forEach((panel) => {
-    const panelStep = Number(panel.dataset.wizardPanel);
-    const active = panelStep === step;
-    panel.classList.toggle("is-active", active);
-    panel.hidden = !active;
+  form.querySelectorAll('[name="type"]').forEach((input) => {
+    input.addEventListener("change", () => updateEstimateFormVisibility(form));
   });
-
-  if (currentEl) currentEl.textContent = String(step);
-  if (titleEl) titleEl.textContent = ESTIMATE_STEP_TITLES[step - 1];
-  if (fillEl) fillEl.style.width = `${(step / ESTIMATE_TOTAL_STEPS) * 100}%`;
-  if (barEl) barEl.setAttribute("aria-valuenow", String(step));
-
-  const isFirst = step === 1;
-  const isLast = step === ESTIMATE_TOTAL_STEPS;
-
-  function toggleWizardBtn(btn, show) {
-    if (!btn) return;
-    btn.hidden = !show;
-    btn.classList.toggle("form-wizard__btn--hidden", !show);
-  }
-
-  toggleWizardBtn(prevBtn, !isFirst);
-  toggleWizardBtn(nextBtn, !isLast);
-  toggleWizardBtn(submitBtn, isLast);
-
-  if (step === 4) updateEstimateStep4Fields(form);
-}
-
-function initEstimateWizard(form) {
-  if (!form.classList.contains("form-wizard")) return;
-  if (form.dataset.wizardInitialized === "true") return;
-  form.dataset.wizardInitialized = "true";
-
-  let step = 1;
-  setEstimateWizardStep(form, step);
-
-  const prevBtn = form.querySelector("[data-wizard-prev]");
-  const nextBtn = form.querySelector("[data-wizard-next]");
-
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      if (!validateEstimateStep(form, step)) return;
-      if (step < ESTIMATE_TOTAL_STEPS) {
-        step += 1;
-        setEstimateWizardStep(form, step);
-      }
-    });
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener("click", () => {
-      if (step > 1) {
-        step -= 1;
-        setEstimateWizardStep(form, step);
-      }
-    });
-  }
-
-  const typeSelect = form.querySelector('[name="type"]');
-  if (typeSelect) {
-    typeSelect.addEventListener("change", () => updateEstimateStep4Fields(form));
-  }
 }
 
 function contactFormHtml() {
@@ -363,13 +307,12 @@ function showFormSuccess(container, type) {
 
 function initForms() {
   document.querySelectorAll("[data-form='estimate']").forEach((form) => {
-    initEstimateWizard(form);
+    initEstimateForm(form);
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const step = Number(form.dataset.wizardStep || ESTIMATE_TOTAL_STEPS);
-      if (!validateEstimateStep(form, step)) return;
+      if (!validateEstimateForm(form)) return;
 
-      const btn = form.querySelector("[data-wizard-submit]");
+      const btn = form.querySelector('button[type="submit"]');
       if (btn) {
         btn.disabled = true;
         btn.textContent = "Odesílám...";

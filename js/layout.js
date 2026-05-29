@@ -69,7 +69,7 @@ function renderFooter() {
           <div class="footer-brand">
             <span class="logo__name">${SITE.name}</span>
             <div class="footer-brand__logo">
-              <img src="images/remax_age.png" alt="RE/MAX Age" width="120" height="48" loading="lazy">
+              <img src="images/remax_logo_bile.png" alt="RE/MAX Age" width="120" height="48" loading="lazy">
             </div>
             <p>Osobní realitní makléř. Pomohu vám prodat nebo pronajmout nemovitost za maximum - s lidským přístupem a kompletním servisem.</p>
             <a href="odhad-zdarma.html" class="btn btn--primary" style="margin-top:1.5rem">Odhad nemovitosti zdarma</a>

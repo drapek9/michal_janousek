@@ -2,6 +2,145 @@
  * Karty nemovitostí, filtrování a detail
  */
 
+function propertyDetailUrl(property) {
+  return `nemovitost.html?slug=${encodeURIComponent(property.slug)}`;
+}
+
+function getPropertyImages(property) {
+  const images = property.images?.length ? [...property.images] : [];
+  if (property.image && !images.includes(property.image)) {
+    images.unshift(property.image);
+  }
+  return images.length ? images : [property.image].filter(Boolean);
+}
+
+const GALLERY_SIDE_SLOTS = 4;
+
+function propertyGalleryThumbHtml(src, index, total, extraClass = "") {
+  return `
+    <button type="button" class="property-gallery__thumb${extraClass}" data-gallery-open="${index}" aria-label="Zobrazit fotografii ${index + 1} z ${total}">
+      <img src="${src}" alt="" width="320" height="240" loading="lazy">
+    </button>`;
+}
+
+function propertyGalleryHtml(images, title, isSold) {
+  const badge = `<span class="card__badge card__badge--${isSold ? "sold" : "available"}">${isSold ? "Prodáno" : "V nabídce"}</span>`;
+  const mainAlt = `${title} – fotografie 1`;
+  const total = images.length;
+
+  let sideGrid = "";
+  if (total > 1) {
+    const showMoreCell = total > GALLERY_SIDE_SLOTS;
+    const thumbCount = showMoreCell ? GALLERY_SIDE_SLOTS - 1 : Math.min(GALLERY_SIDE_SLOTS, total - 1);
+    let cells = "";
+
+    for (let i = 0; i < thumbCount; i++) {
+      cells += propertyGalleryThumbHtml(images[i + 1], i + 1, total);
+    }
+
+    if (showMoreCell) {
+      const hiddenCount = total - 4;
+      const openIndex = GALLERY_SIDE_SLOTS;
+      cells += `
+        <button type="button" class="property-gallery__thumb property-gallery__thumb--more" data-gallery-open="${openIndex}" aria-label="Zobrazit dalších ${hiddenCount} fotografií">
+          <img src="${images[openIndex]}" alt="" width="320" height="240" loading="lazy">
+          <span class="property-gallery__more-label">+${hiddenCount} dalších</span>
+        </button>`;
+    }
+
+    sideGrid = `<div class="property-gallery__side"><div class="property-gallery__grid">${cells}</div></div>`;
+  }
+
+  return `
+    <div class="property-gallery" data-property-gallery>
+      <button type="button" class="property-gallery__main" data-gallery-open="0" aria-label="Zvětšit hlavní fotografii">
+        <img src="${images[0]}" alt="${mainAlt}" width="1200" height="750">
+        ${badge}
+        <span class="property-gallery__hint">Zvětšit fotografii</span>
+      </button>
+      ${sideGrid}
+    </div>
+    <div class="lightbox" id="property-lightbox" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Galerie fotografií">
+      <div class="lightbox__backdrop" data-lightbox-close tabindex="-1"></div>
+      <button type="button" class="lightbox__close" data-lightbox-close aria-label="Zavřít galerii">${ICONS.close}</button>
+      <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Předchozí fotografie">${ICONS.chevronLeft}</button>
+      <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Další fotografie">${ICONS.chevronRight}</button>
+      <figure class="lightbox__figure">
+        <img class="lightbox__img" src="" alt="">
+        <figcaption class="lightbox__counter"></figcaption>
+      </figure>
+    </div>
+  `;
+}
+
+function initPropertyGallery(images, title) {
+  const lightbox = document.getElementById("property-lightbox");
+  if (!lightbox || !images.length) return;
+
+  const imgEl = lightbox.querySelector(".lightbox__img");
+  const counterEl = lightbox.querySelector(".lightbox__counter");
+  const prevBtn = lightbox.querySelector("[data-lightbox-prev]");
+  const nextBtn = lightbox.querySelector("[data-lightbox-next]");
+  let currentIndex = 0;
+  let lastFocus = null;
+
+  function showSlide(index) {
+    currentIndex = (index + images.length) % images.length;
+    imgEl.src = images[currentIndex];
+    imgEl.alt = `${title} – fotografie ${currentIndex + 1}`;
+    if (counterEl) counterEl.textContent = `${currentIndex + 1} / ${images.length}`;
+    if (prevBtn) prevBtn.hidden = images.length <= 1;
+    if (nextBtn) nextBtn.hidden = images.length <= 1;
+  }
+
+  function openLightbox(index) {
+    lastFocus = document.activeElement;
+    showSlide(index);
+    lightbox.hidden = false;
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lightbox-open");
+    lightbox.querySelector(".lightbox__close")?.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.hidden = true;
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-open");
+    if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+  }
+
+  document.querySelectorAll("[data-gallery-open]").forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      openLightbox(Number(trigger.dataset.galleryOpen) || 0);
+    });
+  });
+
+  lightbox.querySelectorAll("[data-lightbox-close]").forEach((el) => {
+    el.addEventListener("click", closeLightbox);
+  });
+
+  prevBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showSlide(currentIndex - 1);
+  });
+
+  nextBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showSlide(currentIndex + 1);
+  });
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (lightbox.hidden) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") showSlide(currentIndex - 1);
+    if (e.key === "ArrowRight") showSlide(currentIndex + 1);
+  });
+}
+
 function propertyCardHtml(property) {
   const isSold = property.status === "sold";
   const priceDisplay = isSold && property.priceLabel
@@ -10,7 +149,7 @@ function propertyCardHtml(property) {
 
   return `
     <article class="card fade-in">
-      <div class="card__inner">
+      <a href="${propertyDetailUrl(property)}" class="card__inner">
         <div class="card__image">
           <img src="${property.image}" alt="${property.title}" loading="lazy" width="400" height="300">
           <span class="card__badge card__badge--${isSold ? "sold" : "available"}">${isSold ? "Prodáno" : "V nabídce"}</span>
@@ -25,7 +164,7 @@ function propertyCardHtml(property) {
             </div>
           </div>
         </div>
-      </div>
+      </a>
     </article>
   `;
 }
@@ -88,7 +227,7 @@ function initPropertyDetail() {
 
   document.title = `${property.title} | ${SITE.name}`;
   const isSold = property.status === "sold";
-  const thumbs = property.images.slice(1, 3);
+  const images = getPropertyImages(property);
 
   root.innerHTML = `
     <section class="page-hero" style="padding-bottom:1rem">
@@ -98,12 +237,7 @@ function initPropertyDetail() {
     </section>
     <section class="section" style="padding-top:0">
       <div class="container">
-        <div class="property-gallery">
-          <div class="property-gallery__main">
-            <img src="${property.images[0]}" alt="${property.title}">
-            <span class="card__badge card__badge--${isSold ? "sold" : "available"}" style="position:absolute;top:1rem;left:1rem">${isSold ? "Prodáno" : "V nabídce"}</span>
-          </div>
-        </div>
+        ${propertyGalleryHtml(images, property.title, isSold)}
         <div class="property-detail__grid">
           <div>
             <h1 class="heading-section">${property.title}</h1>
@@ -139,20 +273,13 @@ function initPropertyDetail() {
               <p style="font-size:0.9375rem"><a href="mailto:${SITE.email}" style="color:inherit">${SITE.email}</a></p>
               ${!isSold ? `<a href="kontakt.html" class="btn btn--primary btn--block" style="margin-top:1.25rem">Mám zájem</a>` : ""}
             </div>
-            ${!isSold ? `<div data-estimate-form style="margin-top:1.5rem" id="detail-estimate-form"></div>` : ""}
           </aside>
         </div>
       </div>
     </section>
   `;
 
-  if (!isSold) {
-    const formEl = document.getElementById("detail-estimate-form");
-    if (formEl) {
-      formEl.innerHTML = estimateFormHtml({ id: "detail-estimate" });
-      initForms();
-    }
-  }
+  initPropertyGallery(images, property.title);
 }
 
 function initHomeProperties() {

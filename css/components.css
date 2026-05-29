@@ -229,6 +229,10 @@
   box-shadow: var(--shadow-md);
 }
 
+.feature-cards--white .feature-card {
+  background: var(--color-white);
+}
+
 .feature-card__icon {
   width: 3rem;
   height: 3rem;
@@ -430,6 +434,177 @@
   display: none;
 }
 
+/* Výběr typu nemovitosti – karty */
+.form-type-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.form-type-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.5rem 0.75rem 0.625rem;
+  gap: 0.25rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-type-card:hover {
+  border-color: rgba(220, 28, 46, 0.35);
+}
+
+.form-type-card:has(.form-type-card__input:checked) {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 1px var(--color-red);
+}
+
+.form-type-card__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.form-type-card__check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-red);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.form-type-card__check svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.form-type-card:has(.form-type-card__input:checked) .form-type-card__check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.form-type-card:has(.form-type-card__input:checked) .form-type-card__icon,
+.form-type-card:has(.form-type-card__input:checked) .form-type-card__label {
+  opacity: 0.35;
+}
+
+.form-type-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.form-type-card__icon img {
+  display: block;
+  width: auto;
+  height: 14.25rem;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.form-type-card__label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-navy);
+  transition: opacity 0.2s ease;
+}
+
+@media (max-width: 479px) {
+  .form-type-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .form-type-card {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+  }
+
+  .form-type-card__icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .form-type-card__icon img {
+    height: 10.25rem;
+  }
+
+  .form-type-card__check svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+/* Rozbalení formuláře po výběru typu */
+.form-estimate-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s ease;
+}
+
+.form-estimate-body.is-open {
+  grid-template-rows: 1fr;
+}
+
+.form-estimate-body__inner {
+  overflow: hidden;
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s ease;
+}
+
+.form-estimate-body.is-open .form-estimate-body__inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-estimate-body.is-open .form-estimate-body__inner > .form-fieldset:first-child {
+  margin-top: 1.5rem;
+}
+
+.form-estimate-actions {
+  margin-top: 1.5rem;
+}
+
+.form-estimate-actions .form-error {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.form-estimate-actions .form-note {
+  margin-top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-estimate-body,
+  .form-estimate-body__inner {
+    transition: none;
+  }
+}
+
 /* Vícekrokový formulář odhadu */
 .form-wizard__header {
   margin-bottom: 1.75rem;
@@ -498,13 +673,15 @@
   font-weight: 500;
 }
 
-.form-wizard__hint {
+.form-wizard__hint,
+.form-hint {
   margin-top: 1rem;
   font-size: 0.875rem;
   color: var(--color-text-muted);
 }
 
-.form-wizard__error {
+.form-wizard__error,
+.form-error {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;

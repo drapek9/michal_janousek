@@ -96,6 +96,10 @@ textarea {
   color: var(--color-red);
 }
 
+.text-green {
+  color: var(--color-green);
+}
+
 /* Layout */
 .container {
   width: 100%;

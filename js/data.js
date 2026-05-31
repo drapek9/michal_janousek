@@ -1,18 +1,36 @@
 /**
- * Data nemovitostí, referencí, služeb - připraveno pro napojení na CMS/API
+ * Data nemovitostí, referencí, služeb – připraveno pro sync ze Sreality / CMS / API
+ *
+ * Schéma nemovitosti (export Sreality → PROPERTIES[]):
+ * - id, srealityId, slug, title, status, price, priceLabel?, offerType, propertyType
+ * - location, city (zkrácená lokalita pro karty)
+ * - locationDetail: { address, street, city, district, county, region, lat, lng, approximate }
+ * - image, images[]
+ * - area, rooms (legacy aliasy pro karty)
+ * - condition, publishedAt, description (plain text, odstavce oddělené prázdným řádkem)
+ * - params: { disposition, usableArea, floorArea, totalArea, landArea, floors, floor,
+ *             ownership, condition, buildingType, equipment, cellar, balcony, loggia,
+ *             terrace, garage, parking, elevator, barrierFree, penb }
+ * - amenities: { interior: {...}, exterior: {...}, technical: {...} }
+ * - features[] (legacy seznam pro karty)
  */
 
 const PROPERTIES = [
   {
     id: "1",
+    srealityId: "1234567890",
     slug: "byt-praha-vinohrady",
     title: "Stylový byt 3+kk",
     location: "Vinohrady",
     city: "Praha",
     price: 12450000,
     status: "available",
+    offerType: "prodej",
+    propertyType: "byt",
     area: 78,
     rooms: "3+kk",
+    condition: "Velmi dobrý",
+    publishedAt: "2025-03-15",
     image: "https://thermo-plus.cz/img/projekty/filip/vizualizace/1.jpg",
     images: [
       "https://thermo-plus.cz/img/projekty/filip/vizualizace/1.jpg",
@@ -22,8 +40,61 @@ const PROPERTIES = [
       "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80",
       "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80",
     ],
+    locationDetail: {
+      address: "Korunní 12, Praha 2",
+      street: "Korunní 12",
+      city: "Praha",
+      district: "Praha 2 – Vinohrady",
+      county: "Praha",
+      region: "Hlavní město Praha",
+      lat: 50.0712,
+      lng: 14.4395,
+      approximate: false,
+    },
+    params: {
+      disposition: "3+kk",
+      usableArea: 78,
+      floorArea: 82,
+      totalArea: 95,
+      floors: 5,
+      floor: "3. patro",
+      ownership: "Osobní",
+      condition: "Velmi dobrý",
+      buildingType: "Cihlová",
+      equipment: "Vybavený",
+      cellar: true,
+      balcony: true,
+      elevator: true,
+      parking: "Garážové stání",
+      penb: "C",
+    },
     description:
-      "Krásný zrekonstruovaný byt v klidné části Vinohrad. Prostorná obývací část s francouzskými okny, moderní kuchyně a dvě ložnice.",
+      "Krásný zrekonstruovaný byt v klidné části Vinohrad s důrazem na kvalitu materiálů a promyšlené dispoziční řešení.\n\nProstorná obývací část s francouzskými okny propojuje obývací pokoj s moderní kuchyní. Dvě samostatné ložnice nabízejí dostatek soukromí, koupelna je vybavena walk-in sprchou.\n\nByt prošel kompletní rekonstrukcí v roce 2023 – nová okna, rozvody, podlahy i kuchyň na míru. K bytu náleží sklep a možnost garážového stání v domě.",
+    amenities: {
+      interior: {
+        kitchen: "Vestavěná kuchyň na míru",
+        furniture: "Částečně zařízeno",
+        appliances: "Myčka, trouba, digestoř, lednice",
+        internet: "Optické vlákno",
+        airConditioning: false,
+        floors: "Dřevěné podlahy, dlažba v koupelně",
+        heating: "Ústřední – dálkové",
+      },
+      exterior: {
+        balcony: true,
+        loggia: false,
+        terrace: false,
+        garden: false,
+        pool: false,
+      },
+      technical: {
+        electricity: "230 V",
+        water: "Municipální",
+        sewage: "Kanalizace",
+        gas: false,
+        internet: "Optické vlákno",
+      },
+    },
     features: ["Balkon", "Sklep", "Výtah", "Parkování"],
     yearBuilt: 1930,
     floor: "3. patro",
@@ -37,8 +108,37 @@ const PROPERTIES = [
     city: "Kladno",
     price: 8900000,
     status: "available",
+    offerType: "prodej",
+    propertyType: "dum",
+    condition: "Dobrý",
+    publishedAt: "2025-02-20",
     area: 165,
     rooms: "5+1",
+    locationDetail: {
+      address: "Kročehlavská, Kladno",
+      street: "Kročehlavská",
+      city: "Kladno",
+      district: "Kročehlavy",
+      county: "Kladno",
+      region: "Středočeský kraj",
+      lat: 50.1475,
+      lng: 14.1028,
+      approximate: true,
+    },
+    params: {
+      disposition: "5+1",
+      usableArea: 165,
+      floorArea: 180,
+      totalArea: 220,
+      landArea: 450,
+      floors: 2,
+      ownership: "Osobní",
+      condition: "Dobrý",
+      buildingType: "Cihlová",
+      garage: true,
+      terrace: true,
+      penb: "B",
+    },
     image:
       "https://www.prodom.cz/userfiles/products/PREMIUM%20215/rodinny_dum_premium215_foto.jpg",
     images: [
@@ -48,7 +148,12 @@ const PROPERTIES = [
       "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
     ],
     description:
-      "Prostorný rodinný dům s velkou zahradou a garáží. Klidná lokalita s výbornou dostupností.",
+      "Prostorný rodinný dům s velkou zahradou a garáží. Klidná lokalita s výbornou dostupností.\n\nPřízemí tvoří obytná zóna s krbem a propojením na terasu. V patře jsou ložnice a pracovna. Zahrada je orientovaná na jih.",
+    amenities: {
+      interior: { heating: "Plynové", floors: "Dřevěné podlahy", kitchen: "Vestavěná" },
+      exterior: { terrace: true, garden: true, garage: true },
+      technical: { electricity: "230 V", water: "Municipální", sewage: "Kanalizace", gas: "Plynovod" },
+    },
     features: ["Zahrada 450 m²", "Garáž", "Terasa", "Krb"],
     yearBuilt: 2005,
     energyClass: "B",
@@ -61,8 +166,32 @@ const PROPERTIES = [
     city: "Ústí nad Labem",
     price: 3250000,
     status: "available",
+    offerType: "prodej",
+    propertyType: "byt",
+    condition: "Po rekonstrukci",
+    publishedAt: "2025-01-10",
     area: 52,
     rooms: "2+kk",
+    locationDetail: {
+      address: "Mírové náměstí, Ústí nad Labem",
+      city: "Ústí nad Labem",
+      district: "Centrum",
+      county: "Ústí nad Labem",
+      region: "Ústecký kraj",
+      lat: 50.6607,
+      lng: 14.0329,
+      approximate: true,
+    },
+    params: {
+      disposition: "2+kk",
+      usableArea: 52,
+      floor: "8. patro",
+      floors: 12,
+      elevator: true,
+      cellar: true,
+      loggia: true,
+      penb: "C",
+    },
     image: "https://www.rodinne-bydleni.cz/katalog/karel-1.jpg",
     images: [
       "https://www.rodinne-bydleni.cz/katalog/karel-1.jpg",
@@ -71,7 +200,12 @@ const PROPERTIES = [
       "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=1200&q=80",
     ],
     description:
-      "Světlý byt v centru Ústí s panoramatickým výhledem na řeku. Kompletní rekonstrukce.",
+      "Světlý byt v centru Ústí s panoramatickým výhledem na řeku. Kompletní rekonstrukce.\n\nObývací pokoj s kuchyňským koutem, ložnice s vestavěnou skříní, moderní koupelna s vanou.",
+    amenities: {
+      interior: { heating: "Ústřední", floors: "Laminát" },
+      exterior: { loggia: true },
+      technical: { electricity: "230 V", water: "Municipální", sewage: "Kanalizace" },
+    },
     features: ["Výtah", "Sklep", "Zasklená lodžie"],
     yearBuilt: 1985,
     floor: "8. patro",
@@ -86,8 +220,21 @@ const PROPERTIES = [
     price: 14200000,
     priceLabel: "Prodáno",
     status: "sold",
+    offerType: "prodej",
+    propertyType: "byt",
+    publishedAt: "2024-11-05",
     area: 95,
     rooms: "4+1",
+    locationDetail: {
+      city: "Praha",
+      district: "Smíchov",
+      county: "Praha",
+      region: "Hlavní město Praha",
+      lat: 50.0668,
+      lng: 14.4039,
+      approximate: true,
+    },
+    params: { disposition: "4+1", usableArea: 95, balcony: true, cellar: true },
     image:
       "https://www.woodsystem.cz/data/images-xl-4-3/2668-321-rodinny-dum-3-1-drevostavba-s-pudou-nwj8323.jpg",
     images: [
@@ -109,8 +256,21 @@ const PROPERTIES = [
     price: 6750000,
     priceLabel: "Prodáno",
     status: "sold",
+    offerType: "prodej",
+    propertyType: "dum",
+    publishedAt: "2024-09-18",
     area: 140,
     rooms: "4+kk",
+    locationDetail: {
+      city: "Beroun",
+      district: "Závodí",
+      county: "Beroun",
+      region: "Středočeský kraj",
+      lat: 49.9639,
+      lng: 14.0722,
+      approximate: true,
+    },
+    params: { disposition: "4+kk", usableArea: 140, landArea: 600, garage: true },
     image:
       "https://www.alfahaus.cz/media/thumbs/stavby/thumb_1150x800_1-21-rodinny-dum-4-kk.jpg?v=1778059124",
     images: [
@@ -132,8 +292,21 @@ const PROPERTIES = [
     price: 4100000,
     priceLabel: "Prodáno",
     status: "sold",
+    offerType: "prodej",
+    propertyType: "byt",
+    publishedAt: "2024-08-02",
     area: 72,
     rooms: "3+1",
+    locationDetail: {
+      city: "Kladno",
+      district: "Centrum",
+      county: "Kladno",
+      region: "Středočeský kraj",
+      lat: 50.1475,
+      lng: 14.1035,
+      approximate: true,
+    },
+    params: { disposition: "3+1", usableArea: 72, balcony: true, cellar: true },
     image:
       "https://www.fndstavby.cz/www/upload/products/images/20220314095858760/20220314095858760.webp",
     images: [

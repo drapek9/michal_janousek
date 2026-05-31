@@ -994,6 +994,29 @@
   border: 1px solid var(--color-border);
 }
 
+.compare-box--negative {
+  border: 2px solid rgba(220, 28, 46, 0.35);
+  background: rgba(220, 28, 46, 0.06);
+}
+
+.compare-box--negative .feature-card__title {
+  color: var(--color-red);
+}
+
+.compare-box--negative .compare-list li span {
+  color: var(--color-red);
+  font-weight: 600;
+}
+
+.compare-box--positive {
+  border: 2px solid rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.06);
+}
+
+.compare-box--positive .feature-card__title {
+  color: var(--color-green);
+}
+
 .compare-box--highlight {
   border: 2px solid rgba(220, 28, 46, 0.3);
   background: rgba(220, 28, 46, 0.04);

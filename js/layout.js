@@ -8,6 +8,30 @@ function getCurrentPage() {
   return path;
 }
 
+function getActualPage() {
+  const path = window.location.pathname.split("/").pop();
+  return path || "index.html";
+}
+
+function isSamePageLink(href) {
+  if (!href || href.startsWith("tel:") || href.startsWith("mailto:") || href.startsWith("http")) {
+    return false;
+  }
+
+  const actual = getActualPage();
+  const target = href.split("#")[0].split("/").pop() || "index.html";
+
+  if (target === "index.html") {
+    return actual === "index.html" || actual === "";
+  }
+
+  return target === actual;
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function isNavActive(linkHref, current) {
   if (linkHref === "index.html") {
     return current === "index.html" || current === "";
@@ -89,6 +113,7 @@ function renderFooter() {
         <div class="footer-bottom">
           <div class="footer-bottom__row">
             <p>© ${new Date().getFullYear()} ${SITE.name}. Všechna práva vyhrazena.</p>
+            <p><a href="ochrana-osobnich-udaju.html" class="footer-legal-link">Ochrana osobních údajů</a></p>
             <p>Nezávislý realitní makléř v síti RE/MAX</p>
           </div>
           <p class="footer-credit">
@@ -159,7 +184,22 @@ function initLayout() {
     });
   }
 
+  initSamePageNavScroll(setMobileMenuOpen);
+
   initSocialLinks();
+}
+
+function initSamePageNavScroll(closeMobileMenu) {
+  document.querySelectorAll(".nav-desktop a, .nav-mobile a, .site-header .logo").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      const href = link.getAttribute("href");
+      if (!isSamePageLink(href)) return;
+
+      e.preventDefault();
+      scrollToTop();
+      closeMobileMenu?.(false);
+    });
+  });
 }
 
 function initSocialLinks() {

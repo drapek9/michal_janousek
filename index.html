@@ -14,18 +14,20 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
 </head>
-<body>
+<body class="page-home">
   <div id="header-placeholder"></div>
 
   <main>
     <!-- Hero -->
     <section class="hero">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <div class="hero__overlay" aria-hidden="true"></div>
       <div class="container hero__grid">
         <div class="hero__content fade-in">
           <p class="label">Osobní realitní makléř</p>
-          <h1 class="heading-display">Realitní makléř pro Prahu, Středočeský a Ústecký kraj</h1>
-          <p class="text-body" style="margin-top:1.5rem;max-width:36rem">
-            Jsem Michal Janoušek - váš osobní makléř, ne anonymní kancelář. Prodej i pronájem nemovitostí s lidským přístupem, transparentní komunikací a kompletním servisem od A do Z.
+          <h1 class="heading-display hero__title">Realitní makléř pro Prahu, Středočeský a Ústecký kraj</h1>
+          <p class="hero__lead">
+            Jsem Michal Janoušek – váš osobní makléř, ne anonymní kancelář. Prodej i pronájem nemovitostí s lidským přístupem, transparentní komunikací a kompletním servisem od A do Z.
           </p>
           <div class="hero__actions">
             <a href="kontakt.html#kontaktni-formular" class="btn btn--primary btn--lg btn--arrow">
@@ -35,15 +37,15 @@
           </div>
           <div class="hero__logo">
             <a href="https://www.remaxage.cz/" target="_blank" rel="noopener noreferrer" aria-label="RE/MAX Age – web kanceláře">
-              <img src="images/remax_logo.png" alt="RE/MAX Age" width="140" height="56" loading="lazy">
+              <img src="images/remax_logo_bile.png" alt="RE/MAX Age" width="140" height="56" loading="lazy">
             </a>
           </div>
         </div>
-        <div class="hero__image-wrap fade-in">
+        <!-- <div class="hero__image-wrap fade-in">
           <div class="hero__image">
-            <img src="images/fotka_michal_janousek_velka.jpeg" alt="Michal Janoušek - realitní makléř RE/MAX Age" width="600" height="800" fetchpriority="high">
+            <img src="images/fotka_michal_janousek_velka.jpeg" alt="Michal Janoušek – realitní makléř RE/MAX Age" width="600" height="800" fetchpriority="high">
           </div>
-        </div>
+        </div> -->
       </div>
     </section>
 
@@ -83,15 +85,33 @@
     <!-- Intro -->
     <section class="section section--cream">
       <div class="container split">
-        <div class="split__image fade-in">
-          <img src="images/fotka_michal_janousek.png" alt="Michal Janoušek" width="600" height="600" loading="lazy">
+        <div class="split__image split__image--about fade-in">
+          <div class="split__image-bg" aria-hidden="true"></div>
+          <img
+            src="images/fotka_michal_janousek_bez_pozadi.png"
+            alt="Michal Janoušek"
+            class="split__image-person"
+            width="600"
+            height="750"
+            loading="lazy"
+          >
         </div>
         <div class="fade-in">
           <p class="label">O mně</p>
           <h2 class="heading-section">Realitní makléř - Bezstarostný proces</h2>
           <p class="text-body" style="margin-top:1.5rem">Jmenuji se Michal Janoušek a v realitách pracuji proto, že mě baví pomáhat lidem v jednom z nejdůležitějších momentů jejich života - prodeji nebo koupi domova.</p>
           <p class="text-body" style="margin-top:1rem">Působím ve Středočeském kraji, Praze a Ústeckém kraji. Ke každé nemovitosti přistupuji individuálně: žádné šablony, žádný automatický marketing.</p>
-          <a href="o-mne.html" class="btn btn--primary btn--sm mt-lg">Více o mně</a>
+          <div class="intro-about__actions">
+            <a href="o-mne.html" class="btn btn--primary btn--sm">Více o mně</a>
+            <img
+              src="images/bronze_certificate.png"
+              alt="Certifikovaný makléř RE/MAX – úroveň Bronze"
+              class="intro-about__certificate"
+              width="160"
+              height="160"
+              loading="lazy"
+            >
+          </div>
         </div>
       </div>
     </section>

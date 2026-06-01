@@ -129,6 +129,38 @@
   height: 1.5rem;
 }
 
+/* Transparent header on homepage hero */
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) {
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .logo__name {
+  color: var(--color-white);
+}
+
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .nav-desktop a {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .nav-desktop a:hover,
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .nav-desktop a.is-active,
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .nav-desktop a[aria-current="page"] {
+  color: var(--color-white);
+}
+
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .header-phone {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .header-phone:hover {
+  color: var(--color-white);
+}
+
+.page-home .site-header:not(.is-scrolled):not(.is-menu-open) .menu-toggle {
+  color: var(--color-white);
+}
+
 /* Mobile nav */
 .nav-mobile__backdrop {
   position: fixed;
@@ -419,26 +451,85 @@ body.menu-open .floating-cta {
 
 /* Hero (homepage) */
 .hero {
-  min-height: auto;
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   padding-top: var(--header-height);
-  background: var(--color-cream);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--color-navy-dark);
+  box-sizing: border-box;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: url("../images/hero_sekce_bg.jpeg");
+  background-size: cover;
+  background-position: 55% center;
+  background-repeat: no-repeat;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    rgba(6, 24, 41, 0.82) 0%,
+    rgba(6, 24, 41, 0.55) 38%,
+    rgba(6, 24, 41, 0.2) 58%,
+    transparent 78%
+  );
 }
 
 .hero__grid {
   display: grid;
-  gap: 3rem;
-  align-items: center;
-  padding: 3rem 0;
+  gap: 1.5rem;
+  align-items: end;
+  width: 100%;
+  flex: 1;
+  min-height: calc(100vh - var(--header-height));
+  min-height: calc(100dvh - var(--header-height));
+  padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(1.5rem, 4vw, 2.5rem);
 }
 
 @media (min-width: 1024px) {
   .hero__grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    padding: 4rem 0;
+    grid-template-columns: minmax(0, 1fr) min(46%, 32rem);
+    gap: 0;
+    align-items: end;
+    padding-bottom: clamp(2rem, 4vw, 3rem);
   }
+
+  .hero__bg {
+    background-position: center center;
+  }
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  max-width: 40rem;
+}
+
+.hero__title {
+  color: var(--color-white);
+  margin-top: 0.75rem;
+}
+
+.hero__lead {
+  margin-top: 1.25rem;
+  max-width: 36rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .hero__logo {
@@ -447,7 +538,7 @@ body.menu-open .floating-cta {
 
 .hero__logo a {
   display: inline-block;
-  opacity: 0.88;
+  opacity: 0.95;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -479,61 +570,75 @@ body.menu-open .floating-cta {
 
 .hero__image-wrap {
   position: relative;
-  width: min(26rem, 100%);
+  z-index: 1;
+  align-self: end;
+  width: 100%;
   max-width: min(26rem, 100%);
   margin: 0 auto;
 }
 
 @media (min-width: 1024px) {
   .hero__image-wrap {
-    margin-left: auto;
-    margin-right: 0;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    margin-right: max(-2rem, -4vw);
   }
 }
 
 .hero__image {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .hero__image img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  height: auto;
+  max-height: calc(100dvh - var(--header-height) - 14rem);
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+@media (min-width: 1024px) {
+  .hero__image img {
+    object-position: bottom right;
+    max-height: calc(100dvh - var(--header-height) - 2rem);
+  }
 }
 
 @media (max-width: 1023px) {
-  .hero {
-    align-items: stretch;
-  }
-
-  .hero > .container {
-    --hero-pad: clamp(1.5rem, 6vw, 2rem);
-    padding-inline: var(--hero-pad);
+  .hero__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(6, 24, 41, 0.85) 0%,
+      rgba(6, 24, 41, 0.55) 45%,
+      rgba(6, 24, 41, 0.15) 70%,
+      transparent 100%
+    );
   }
 
   .hero__grid {
-    padding-top: 0;
-    padding-bottom: 2.5rem;
-    gap: 2rem;
+    align-content: end;
+    gap: 0.5rem;
+  }
+
+  .hero__content {
+    padding-bottom: 0.5rem;
   }
 
   .hero__image-wrap {
-    order: -1;
-    width: min(26rem, 100%);
-    max-width: min(26rem, 100%);
-    margin-inline: auto;
+    order: 2;
+    max-width: min(22rem, 88%);
+    margin-top: -0.5rem;
   }
 
-  .hero__image {
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
+  .hero__image img {
+    max-height: calc(100dvh - var(--header-height) - 12rem);
   }
-
 }
 
 .hero__badge {
@@ -574,17 +679,73 @@ body.menu-open .floating-cta {
 }
 
 .split__image {
-  aspect-ratio: 1;
+  position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
   max-width: 32rem;
 }
 
-.split__image img {
+.split__image--about {
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.split__image-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("../images/pozadi_mensi.jpeg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.split__image-person {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* Legacy split photo (other pages) */
+.split__image:not(.split__image--about) img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top;
+}
+
+.split__image:not(.split__image--about) {
+  aspect-ratio: 1;
+}
+
+.intro-about__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.intro-about__certificate {
+  width: clamp(7.5rem, 16vw, 10rem);
+  height: auto;
+  flex-shrink: 0;
+  display: block;
+}
+
+@media (max-width: 479px) {
+  .intro-about__actions {
+    flex-wrap: wrap;
+  }
+
+  .intro-about__certificate {
+    margin-left: auto;
+  }
 }
 
 .link-arrow {
@@ -604,6 +765,7 @@ body.menu-open .floating-cta {
 /* Estimate promo on homepage */
 .estimate-promo-section {
   padding-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
 }
 
 .estimate-promo {
@@ -661,6 +823,10 @@ body.menu-open .floating-cta {
 }
 
 .estimate-promo__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
   text-align: left;
 }
 

@@ -736,25 +736,15 @@ body.menu-open .floating-cta {
   aspect-ratio: 1;
   width: 100%;
   max-width: 32rem;
-}
-
-.split__image-bg {
-  position: absolute;
-  inset: 0;
-  background-image: url("../images/pozadi_mensi.jpeg");
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  background: transparent;
+  overflow: hidden;
 }
 
 .split__image-person {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: top center;
 }
 

@@ -5,9 +5,7 @@
 const ESTIMATE_SECTION_TITLES = [
   "Typ nemovitosti",
   "Kde se nemovitost nachází",
-  "Vlastnictví nemovitosti",
   "Detaily nemovitosti",
-  "Kontakt na vás",
 ];
 
 const ESTIMATE_PROPERTY_TYPES = [
@@ -30,15 +28,40 @@ const ESTIMATE_DISPOSITIONS = [
   "6+kk a větší",
 ];
 
-const ESTIMATE_OWNER_STATUS = [
-  { value: "ano", label: "Ano" },
-  { value: "zastupuji", label: "Ne, zastupuji vlastníka" },
-  { value: "spoluvlastnik", label: "Spoluvlastník" },
-];
-
 const ESTIMATE_OWNERSHIP_TYPES = [
   { value: "druzstevni", label: "Družstevní" },
   { value: "osobni", label: "Osobní" },
+];
+
+const ESTIMATE_BUILDING_CONSTRUCTION = [
+  { value: "cihlovy", label: "Cihlový dům" },
+  { value: "panelovy", label: "Panelový dům" },
+  { value: "jine", label: "Jiné" },
+];
+
+const ESTIMATE_HOUSE_TYPES = [
+  { value: "samostatny_rodinny", label: "Samostatný rodinný dům" },
+  { value: "radovy_blok", label: "Řadový dům / v bloku" },
+  { value: "cinzovni", label: "Činžovní dům" },
+  { value: "rekreacni", label: "Dům k rekreaci" },
+  { value: "komercni", label: "Komerční objekt (kanceláře, obchody)" },
+];
+
+const ESTIMATE_EXTRA_INFO = [
+  { value: "balkon_lodzie", label: "Balkón/lodžie" },
+  { value: "terasa", label: "Terasa" },
+  { value: "sklep", label: "Sklep" },
+  { value: "vytah", label: "Výtah" },
+  { value: "parkovaci_stani", label: "Parkovací stání" },
+  { value: "garaz", label: "Garáž" },
+];
+
+const ESTIMATE_ODHAD_TYPES = [
+  { value: "majitel_odhad_zdarma", label: "Jsem majitelem – odhad ZDARMA" },
+  { value: "dedicske_riceni", label: "Pro dědické řízení" },
+  { value: "vyporadani_sjm_rozvod", label: "Pro vypořádání SJM při rozvodu" },
+  { value: "vyporadani_spoluvlastnici", label: "Pro vypořádání mezi spoluvlastníky" },
+  { value: "kupuji_nemovitost", label: "Kupuji nemovitost" },
 ];
 
 function estimateFormHtml(options = {}) {
@@ -57,13 +80,38 @@ function estimateFormHtml(options = {}) {
   const dispositionOptions = ESTIMATE_DISPOSITIONS.map(
     (d) => `<option value="${d}">${d}</option>`
   ).join("");
-  const ownershipOptions = ESTIMATE_OWNERSHIP_TYPES.map(
-    (o) => `<option value="${o.value}">${o.label}</option>`
-  ).join("");
-  const ownerStatusRadios = ESTIMATE_OWNER_STATUS.map(
+  const ownershipRadios = ESTIMATE_OWNERSHIP_TYPES.map(
     (o) => `
     <label class="form-radio">
-      <input type="radio" name="owner_status" value="${o.value}">
+      <input type="radio" name="ownership" value="${o.value}">
+      <span>${o.label}</span>
+    </label>`
+  ).join("");
+  const houseTypeRadios = ESTIMATE_HOUSE_TYPES.map(
+    (o) => `
+    <label class="form-radio">
+      <input type="radio" name="house_type" value="${o.value}">
+      <span>${o.label}</span>
+    </label>`
+  ).join("");
+  const odhadTypeRadios = ESTIMATE_ODHAD_TYPES.map(
+    (o) => `
+    <label class="form-radio">
+      <input type="radio" name="estimate_type" value="${o.value}">
+      <span>${o.label}</span>
+    </label>`
+  ).join("");
+  const buildingConstructionRadios = ESTIMATE_BUILDING_CONSTRUCTION.map(
+    (o) => `
+    <label class="form-radio">
+      <input type="radio" name="building_construction" value="${o.value}">
+      <span>${o.label}</span>
+    </label>`
+  ).join("");
+  const extraInfoCheckboxes = ESTIMATE_EXTRA_INFO.map(
+    (o) => `
+    <label class="form-checkbox">
+      <input type="checkbox" name="extra_info" value="${o.value}">
       <span>${o.label}</span>
     </label>`
   ).join("");
@@ -82,6 +130,11 @@ function estimateFormHtml(options = {}) {
       <div class="form-estimate-body" data-estimate-body>
         <div class="form-estimate-body__inner">
       <fieldset class="form-fieldset">
+        <legend class="form-fieldset__legend">Typ odhadu</legend>
+        <div class="form-radio-group" role="radiogroup" aria-label="Typ odhadu">${odhadTypeRadios}</div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
         <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[1]}</legend>
         <div class="form-grid form-grid--2">
           <div class="form-group">
@@ -97,12 +150,6 @@ function estimateFormHtml(options = {}) {
 
       <fieldset class="form-fieldset">
         <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[2]}</legend>
-        <span class="form-label">Jste vlastníkem nemovitosti? *</span>
-        <div class="form-radio-group">${ownerStatusRadios}</div>
-      </fieldset>
-
-      <fieldset class="form-fieldset">
-        <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[3]}</legend>
         <div class="form-grid form-grid--2">
           <div class="form-group" data-estimate-field="dispozice">
             <label for="${id}-dispozice">Dispozice *</label>
@@ -114,19 +161,22 @@ function estimateFormHtml(options = {}) {
             <label for="${id}-area">Plocha (m²) *</label>
             <input class="form-input" id="${id}-area" name="area" type="number" min="1" placeholder="např. 75">
           </div>
-          <div class="form-group form-group--full" data-estimate-field="vlastnictvi">
-            <label for="${id}-ownership">Druh vlastnictví *</label>
-            <select class="form-input" id="${id}-ownership" name="ownership">
-              <option value="">Vyberte typ vlastnictví</option>${ownershipOptions}
-            </select>
+          <div class="form-group form-group--full" data-estimate-field="typ-domu">
+            <span class="form-label">Typ domu *</span>
+            <div class="form-radio-group" role="radiogroup" aria-label="Typ domu">${houseTypeRadios}</div>
           </div>
-        </div>
-        <p class="form-hint" data-estimate-hint="pozemek" hidden>Pro pozemek vyplňte pouze plochu v m².</p>
-      </fieldset>
-
-      <fieldset class="form-fieldset">
-        <legend class="form-fieldset__legend">${ESTIMATE_SECTION_TITLES[4]}</legend>
-        <div class="form-grid form-grid--2">
+          <div class="form-group form-group--full" data-estimate-field="vlastnictvi">
+            <span class="form-label">Druh vlastnictví *</span>
+            <div class="form-radio-group" role="radiogroup" aria-label="Druh vlastnictví">${ownershipRadios}</div>
+          </div>
+          <div class="form-group form-group--full" data-estimate-field="konstrukce">
+            <span class="form-label">Konstrukce domu *</span>
+            <div class="form-radio-group" role="radiogroup" aria-label="Konstrukce domu">${buildingConstructionRadios}</div>
+          </div>
+          <div class="form-group form-group--full" data-estimate-field="dalsi-informace">
+            <span class="form-label">Další informace</span>
+            <div class="form-checkbox-group" role="group" aria-label="Další informace">${extraInfoCheckboxes}</div>
+          </div>
           <div class="form-group form-group--full">
             <label for="${id}-name">Jméno a příjmení *</label>
             <input class="form-input" id="${id}-name" name="name" type="text" placeholder="Jan Novák" autocomplete="name">
@@ -140,6 +190,7 @@ function estimateFormHtml(options = {}) {
             <input class="form-input" id="${id}-phone" name="phone" type="tel" placeholder="+420 123 456 789" autocomplete="tel">
           </div>
         </div>
+        <p class="form-hint" data-estimate-hint="pozemek" hidden>Pro pozemek vyplňte pouze plochu v m².</p>
       </fieldset>
         </div>
       </div>
@@ -162,16 +213,28 @@ function isEstimatePozemek(form) {
   return type && type.value === "pozemek";
 }
 
+function isEstimateDum(form) {
+  const type = getEstimateType(form);
+  return type && type.value === "dum";
+}
+
 function updateEstimateDetailFields(form) {
   if (!getEstimateType(form)) return;
 
   const isPozemek = isEstimatePozemek(form);
+  const isDum = isEstimateDum(form);
   const dispoziceField = form.querySelector('[data-estimate-field="dispozice"]');
+  const typDomuField = form.querySelector('[data-estimate-field="typ-domu"]');
   const vlastnictviField = form.querySelector('[data-estimate-field="vlastnictvi"]');
+  const konstrukceField = form.querySelector('[data-estimate-field="konstrukce"]');
+  const dalsiInformaceField = form.querySelector('[data-estimate-field="dalsi-informace"]');
   const hint = form.querySelector('[data-estimate-hint="pozemek"]');
 
   if (dispoziceField) dispoziceField.hidden = isPozemek;
+  if (typDomuField) typDomuField.hidden = !isDum;
   if (vlastnictviField) vlastnictviField.hidden = isPozemek;
+  if (konstrukceField) konstrukceField.hidden = isPozemek;
+  if (dalsiInformaceField) dalsiInformaceField.hidden = isPozemek;
   if (hint) hint.hidden = !isPozemek;
 }
 
@@ -216,22 +279,29 @@ function validateEstimateForm(form) {
   const type = getEstimateType(form);
   if (!type) return fail("Vyberte typ nemovitosti.");
 
+  const estimateType = form.querySelector('[name="estimate_type"]:checked');
+  if (!estimateType) return fail("Vyberte typ odhadu.");
+
   const city = form.querySelector('[name="city"]');
   const street = form.querySelector('[name="street"]');
   if (!city?.value.trim()) return fail("Vyplňte město.");
   if (!street?.value.trim()) return fail("Vyplňte ulici.");
-
-  const owner = form.querySelector('[name="owner_status"]:checked');
-  if (!owner) return fail("Vyberte, zda jste vlastníkem nemovitosti.");
 
   const area = form.querySelector('[name="area"]');
   if (!area?.value || Number(area.value) < 1) return fail("Vyplňte plochu v m².");
 
   if (!isEstimatePozemek(form)) {
     const dispozice = form.querySelector('[name="dispozice"]');
-    const ownership = form.querySelector('[name="ownership"]');
+    const ownership = form.querySelector('[name="ownership"]:checked');
+    const buildingConstruction = form.querySelector('[name="building_construction"]:checked');
     if (!dispozice?.value) return fail("Vyberte dispozici.");
-    if (!ownership?.value) return fail("Vyberte druh vlastnictví.");
+    if (!ownership) return fail("Vyberte druh vlastnictví.");
+    if (!buildingConstruction) return fail("Vyberte konstrukci domu.");
+  }
+
+  if (isEstimateDum(form)) {
+    const houseType = form.querySelector('[name="house_type"]:checked');
+    if (!houseType) return fail("Vyberte typ domu.");
   }
 
   const name = form.querySelector('[name="name"]');

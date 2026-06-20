@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /
+
+# Předání Authorization hlavičky pro PHP API (Wedos / Apache)
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# API router: /api/properties → api/index.php?route=properties
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/(.*)$ api/index.php?route=$1 [QSA,L]

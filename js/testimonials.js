@@ -23,15 +23,16 @@ function initTestimonials() {
   const limit = parseInt(grid.dataset.limit || "6", 10);
   const showMoreBtn = document.getElementById("testimonials-more");
   let visible = limit;
+  let items = TESTIMONIALS;
 
   function render() {
-    grid.innerHTML = TESTIMONIALS.slice(0, visible)
+    grid.innerHTML = items.slice(0, visible)
       .map(testimonialCardHtml)
       .join("");
     if (typeof observeFadeIn === "function") observeFadeIn(grid);
     if (showMoreBtn) {
       showMoreBtn.style.display =
-        visible >= TESTIMONIALS.length ? "none" : "inline-flex";
+        visible >= items.length ? "none" : "inline-flex";
     }
   }
 
@@ -39,10 +40,36 @@ function initTestimonials() {
 
   if (showMoreBtn) {
     showMoreBtn.addEventListener("click", () => {
-      visible = TESTIMONIALS.length;
+      visible = items.length;
       render();
     });
   }
+
+  return {
+    setItems(nextItems) {
+      items = nextItems;
+      visible = limit;
+      render();
+    },
+  };
 }
 
-document.addEventListener("DOMContentLoaded", initTestimonials);
+async function initTestimonialsFromApi() {
+  const controller = initTestimonials();
+  if (!controller || !window.PropertiesApi) return;
+
+  try {
+    const reviews = await PropertiesApi.loadReviews();
+    if (reviews.length) controller.setItems(reviews);
+  } catch (err) {
+    console.error("Nepodařilo se načíst recenze:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.PropertiesApi) {
+    initTestimonialsFromApi();
+    return;
+  }
+  initTestimonials();
+});

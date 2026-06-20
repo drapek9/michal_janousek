@@ -1,0 +1,22 @@
+# Wedos MySQL API – lokální konfigurace (obsahuje DB hesla)
+api/config.local.php
+api/config.local.dev.php
+
+# Nahrané fotografie nemovitostí (generované na serveru)
+uploads/properties/*
+!uploads/properties/.htaccess
+
+# Prostředí / logy
+.env
+.env.*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp

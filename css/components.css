@@ -183,6 +183,27 @@
   color: var(--color-text-muted);
 }
 
+.card__specs {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.card__specs .property-specs--card {
+  border-top: none;
+  padding-top: 0;
+  gap: 0.35rem 1rem;
+}
+
+.card__specs .property-specs--card .property-specs__row {
+  font-size: 0.8125rem;
+  padding: 0.15rem 0;
+}
+
+.card__specs .property-specs__highlights {
+  margin-top: 0.75rem;
+}
+
 .card__link {
   display: inline-flex;
   align-items: center;
@@ -971,6 +992,13 @@
 .grid-3 {
   display: grid;
   gap: 2rem;
+}
+
+.properties-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--color-text-muted);
 }
 
 .grid-4 {

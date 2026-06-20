@@ -1362,6 +1362,7 @@ body.lightbox-open {
   margin-top: 1rem;
 }
 
+.property-specs__pill,
 .property-specs__highlights span {
   padding: 0.35rem 0.75rem;
   font-size: 0.8125rem;
@@ -1378,12 +1379,6 @@ body.lightbox-open {
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
   z-index: 0;
-}
-
-.property-map__note {
-  margin-top: 0.65rem;
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
 }
 
 .property-location__address {

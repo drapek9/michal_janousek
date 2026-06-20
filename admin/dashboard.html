@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Dashboard | Admin nemovitostí</title>
+    <link rel="stylesheet" href="css/admin.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-wrap">
+      <header class="admin-header">
+        <div>
+          <h1>Správa nemovitostí</h1>
+          <p class="admin-user" id="user-email"></p>
+        </div>
+        <button type="button" class="admin-btn admin-btn--ghost" id="logout-btn">Odhlásit se</button>
+      </header>
+
+      <nav class="admin-nav" aria-label="Sekce administrace">
+        <a href="dashboard.html" class="admin-btn admin-btn--primary admin-btn--sm is-active">Nemovitosti</a>
+        <a href="reviews.html" class="admin-btn admin-btn--ghost admin-btn--sm">Recenze</a>
+      </nav>
+
+      <section class="admin-section admin-card" id="property-form-section" aria-labelledby="form-heading">
+        <h2 id="form-heading">Přidat nemovitost</h2>
+        <p id="form-editing-hint" class="admin-hint" hidden></p>
+        <div id="form-success" class="admin-alert admin-alert--success" hidden role="status"></div>
+        <div id="form-error" class="admin-alert admin-alert--error" hidden role="alert"></div>
+
+        <form id="property-form" class="admin-form">
+          <div class="admin-form-grid">
+            <h3 class="admin-form-section-title">Základní údaje</h3>
+            <div class="admin-field admin-field--wide">
+              <label for="title">Název *</label>
+              <input type="text" id="title" name="title" required maxlength="500" />
+            </div>
+            <div class="admin-field">
+              <label for="slug">Slug / odkaz *</label>
+              <input type="text" id="slug" name="slug" required maxlength="200" placeholder="např. byt-jihlava-3kk" />
+            </div>
+            <div class="admin-field">
+              <label for="status">Stav *</label>
+              <select id="status" name="status" required>
+                <option value="available">V nabídce</option>
+                <option value="reserved">Rezervováno</option>
+                <option value="sold">Prodáno</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="offer_type">Typ nabídky *</label>
+              <select id="offer_type" name="offer_type" required>
+                <option value="prodej">Prodej</option>
+                <option value="pronajem">Pronájem</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="property_type">Typ nemovitosti *</label>
+              <select id="property_type" name="property_type" required>
+                <option value="byt">Byt</option>
+                <option value="dum">Rodinný dům</option>
+                <option value="pozemek">Pozemek</option>
+                <option value="komercni">Komerční</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="price">Cena (Kč)</label>
+              <input type="number" id="price" name="price" min="0" step="1" placeholder="Volitelné" />
+            </div>
+            <div class="admin-field">
+              <label for="location">Lokalita *</label>
+              <input type="text" id="location" name="location" required maxlength="300" placeholder="např. Jihlava – centrum" />
+            </div>
+            <div class="admin-field admin-field--wide admin-map-field">
+              <span class="admin-field-label">Poloha na mapě</span>
+              <p class="admin-hint">Klikněte do mapy, nebo zadejte souřadnice a potvrďte tlačítkem OK.</p>
+              <div class="admin-map-toolbar">
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm" id="map-clear-btn">Odstranit bod</button>
+              </div>
+              <div id="admin-map-picker" class="admin-map-picker" aria-label="Výběr polohy na mapě"></div>
+              <div class="admin-map-manual">
+                <div class="admin-field">
+                  <label for="map_lat">Zeměpisná šířka (lat)</label>
+                  <input type="text" id="map_lat" name="map_lat" inputmode="decimal" placeholder="49.3961" autocomplete="off" />
+                </div>
+                <div class="admin-field">
+                  <label for="map_lng">Zeměpisná délka (lng)</label>
+                  <input type="text" id="map_lng" name="map_lng" inputmode="decimal" placeholder="15.5912" autocomplete="off" />
+                </div>
+                <button type="button" class="admin-btn admin-btn--primary admin-btn--sm" id="map-apply-btn">OK</button>
+              </div>
+              <p id="map-picker-status" class="admin-map-status" hidden role="status"></p>
+            </div>
+
+            <h3 class="admin-form-section-title">Parametry</h3>
+            <div class="admin-field" data-show-for="byt,dum,komercni,pozemek">
+              <label for="area" id="area-label">Užitná plocha (m²)</label>
+              <input type="number" id="area" name="area" min="0" step="1" />
+            </div>
+            <div class="admin-field" data-show-for="byt,dum,komercni">
+              <label for="rooms">Dispozice</label>
+              <select id="rooms" name="rooms">
+                <option value="">— vyberte —</option>
+              </select>
+            </div>
+            <div class="admin-field" data-show-for="byt">
+              <label for="floor">Patro</label>
+              <input type="text" id="floor" name="floor" maxlength="50" placeholder="např. 3" />
+            </div>
+            <div class="admin-field" data-show-for="dum">
+              <label for="land_area">Plocha pozemku (m²)</label>
+              <input type="number" id="land_area" name="land_area" min="0" step="1" />
+            </div>
+            <div class="admin-field" data-show-for="byt,dum,komercni">
+              <label for="condition">Stav</label>
+              <select id="condition" name="condition">
+                <option value="">— vyberte —</option>
+                <option value="Novostavba">Novostavba</option>
+                <option value="Velmi dobrý">Velmi dobrý</option>
+                <option value="Dobrý">Dobrý</option>
+                <option value="Udržovaný">Udržovaný</option>
+                <option value="Před rekonstrukcí">Před rekonstrukcí</option>
+                <option value="K rekonstrukci">K rekonstrukci</option>
+                <option value="Ve výstavbě">Ve výstavbě</option>
+              </select>
+            </div>
+            <div class="admin-field" data-show-for="byt,dum,pozemek,komercni">
+              <label for="ownership">Vlastnictví</label>
+              <select id="ownership" name="ownership">
+                <option value="">— vyberte —</option>
+                <option value="Osobní">Osobní</option>
+                <option value="Družstevní">Družstevní</option>
+                <option value="Státní/obecní">Státní/obecní</option>
+                <option value="Jiné">Jiné</option>
+              </select>
+            </div>
+            <div class="admin-field" data-show-for="byt,dum,komercni">
+              <label for="building_type">Typ stavby</label>
+              <select id="building_type" name="building_type">
+                <option value="">— vyberte —</option>
+                <option value="Cihlová">Cihlová</option>
+                <option value="Panelová">Panelová</option>
+                <option value="Skeletová">Skeletová</option>
+                <option value="Smíšená">Smíšená</option>
+                <option value="Dřevěná">Dřevěná</option>
+                <option value="Montovaná">Montovaná</option>
+                <option value="Kamenná">Kamenná</option>
+                <option value="Jiná">Jiná</option>
+              </select>
+            </div>
+            <div class="admin-field" data-show-for="byt,dum,komercni">
+              <label for="penb">PENB *</label>
+              <select id="penb" name="penb" required>
+                <option value="">— vyberte —</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="G">G</option>
+              </select>
+            </div>
+            <div class="admin-field admin-field--wide" data-show-for="byt,dum,komercni">
+              <span class="admin-field-label">Příslušenství</span>
+              <div class="admin-amenities">
+                <label class="admin-toggle"><input type="checkbox" name="param_flag" value="balcony" /> Balkon</label>
+                <label class="admin-toggle"><input type="checkbox" name="param_flag" value="loggia" /> Lodžie</label>
+                <label class="admin-toggle"><input type="checkbox" name="param_flag" value="terrace" /> Terasa</label>
+                <label class="admin-toggle"><input type="checkbox" name="param_flag" value="cellar" /> Sklep</label>
+                <label class="admin-toggle"><input type="checkbox" name="param_flag" value="garage" /> Garáž</label>
+                <label class="admin-toggle"><input type="checkbox" name="param_flag" value="elevator" /> Výtah</label>
+                <label class="admin-toggle"><input type="checkbox" name="param_flag" value="barrierFree" /> Bezbariérový</label>
+              </div>
+            </div>
+            <div class="admin-field admin-field--wide">
+              <label for="description">Popis</label>
+              <textarea id="description" name="description" rows="8" placeholder="Odstavce oddělte prázdným řádkem"></textarea>
+            </div>
+
+            <h3 class="admin-form-section-title">Fotografie</h3>
+            <div class="admin-field admin-field--wide admin-image-field">
+              <span class="admin-field-label" id="image-label">Hlavní obrázek *</span>
+              <p class="admin-hint" id="image-hint">Vložte URL, nebo nahrajte soubor na server.</p>
+              <div class="admin-image-tabs" role="tablist">
+                <button type="button" class="is-active" data-image-mode="url" role="tab">URL</button>
+                <button type="button" data-image-mode="file" role="tab">Soubor</button>
+              </div>
+              <div id="image-panel-url" class="admin-image-panel">
+                <input type="text" id="image-url" name="image-url" maxlength="1000" placeholder="https://… nebo /uploads/properties/…" />
+              </div>
+              <div id="image-panel-file" class="admin-image-panel" hidden>
+                <input type="file" id="image-file" accept="image/jpeg,image/png,image/webp,image/gif" />
+                <p class="admin-hint">Max. 5 MB · JPEG, PNG, WebP, GIF</p>
+              </div>
+              <img id="image-preview" class="admin-image-preview" hidden alt="Náhled" />
+            </div>
+            <div class="admin-field admin-field--wide admin-extra-images-field">
+              <span class="admin-field-label">Další fotografie</span>
+              <p class="admin-hint">Nahrané soubory se zobrazí jako náhledy níže. Do pole URL patří jen odkazy na web (https://…).</p>
+              <label for="images_extra">Odkazy na web (URL)</label>
+              <textarea id="images_extra" name="images_extra" rows="4" placeholder="https://example.com/foto.jpg"></textarea>
+              <label for="images_extra_files" class="admin-extra-images-files-label">Soubory z počítače</label>
+              <input type="file" id="images_extra_files" accept="image/jpeg,image/png,image/webp,image/gif" multiple />
+              <p class="admin-hint">Max. 5 MB · JPEG, PNG, WebP, GIF · náhled smažete najetím myší a kliknutím</p>
+              <div id="images_extra_preview" class="admin-extra-images-preview" hidden aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn--primary" id="form-submit">Uložit nemovitost</button>
+            <button type="button" class="admin-btn admin-btn--ghost" id="form-cancel" hidden>Zrušit úpravu</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="admin-section admin-card" aria-labelledby="list-heading">
+        <h2 id="list-heading">Seznam nemovitostí</h2>
+        <div class="admin-toolbar">
+          <div class="admin-filter" role="group" aria-label="Filtr stavu">
+            <button type="button" class="is-active" data-filter="all">Vše</button>
+            <button type="button" data-filter="available">V nabídce</button>
+            <button type="button" data-filter="reserved">Rezervované</button>
+            <button type="button" data-filter="sold">Prodáno</button>
+          </div>
+          <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm" id="refresh-btn">Obnovit</button>
+        </div>
+        <div id="list-error" class="admin-alert admin-alert--error" hidden role="alert"></div>
+        <div id="list-loading" class="admin-loading">Načítám…</div>
+        <div id="list-empty" class="admin-empty" hidden>Žádné nemovitosti.</div>
+        <div class="admin-table-wrap" id="table-wrap" hidden>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Název</th>
+                <th>Cena</th>
+                <th>Lokalita</th>
+                <th>Typ</th>
+                <th>Stav</th>
+                <th>Akce</th>
+              </tr>
+            </thead>
+            <tbody id="properties-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="admin-credit">
+        Admin vytvořil
+        <a href="https://simondrapal.cz/" target="_blank" rel="noopener noreferrer">Šimon Drápal</a>
+      </p>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script type="module" src="js/dashboard.js"></script>
+  </body>
+</html>

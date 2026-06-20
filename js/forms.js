@@ -348,9 +348,65 @@ function contactFormHtml() {
         <label for="contact-message">Zpráva *</label>
         <textarea class="form-input" id="contact-message" name="message" rows="5" required></textarea>
       </div>
+      <p class="form-error" role="alert" hidden></p>
       <button type="submit" class="btn btn--primary btn--lg" style="margin-top:1.5rem">Odeslat zprávu</button>
     </form>
   `;
+}
+
+function showFormError(form, message) {
+  const errorEl = form.querySelector(".form-error");
+  if (errorEl) {
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  }
+}
+
+function clearFormError(form) {
+  const errorEl = form.querySelector(".form-error");
+  if (errorEl) {
+    errorEl.textContent = "";
+    errorEl.hidden = true;
+  }
+}
+
+function setSubmitButtonState(btn, isLoading, loadingText, defaultHtml) {
+  if (!btn) return;
+  if (isLoading) {
+    btn.disabled = true;
+    btn.textContent = loadingText;
+    return;
+  }
+  btn.disabled = false;
+  if (defaultHtml) btn.innerHTML = defaultHtml;
+}
+
+function validateContactForm(form) {
+  clearFormError(form);
+
+  const name = form.querySelector('[name="name"]');
+  const email = form.querySelector('[name="email"]');
+  const message = form.querySelector('[name="message"]');
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!name?.value.trim()) {
+    showFormError(form, "Vyplňte jméno.");
+    return false;
+  }
+  if (!email?.value.trim()) {
+    showFormError(form, "Vyplňte e-mail.");
+    return false;
+  }
+  if (!emailPattern.test(email.value.trim())) {
+    showFormError(form, "Zadejte platný e-mail.");
+    return false;
+  }
+  if (!message?.value.trim()) {
+    showFormError(form, "Vyplňte zprávu.");
+    return false;
+  }
+
+  return true;
 }
 
 function showFormSuccess(container, type) {
@@ -378,32 +434,52 @@ function showFormSuccess(container, type) {
 function initForms() {
   document.querySelectorAll("[data-form='estimate']").forEach((form) => {
     initEstimateForm(form);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitBtnHtml = submitBtn?.innerHTML || "";
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!validateEstimateForm(form)) return;
 
-      const btn = form.querySelector('button[type="submit"]');
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = "Odesílám...";
+      clearFormError(form);
+      setSubmitButtonState(submitBtn, true, "Odesílám...");
+
+      try {
+        await sendEstimateEmail(form);
+        showFormSuccess(form.parentElement, "estimate");
+      } catch (err) {
+        console.error("[EmailJS] Chyba odeslání odhadu:", err);
+        setSubmitButtonState(submitBtn, false, "", submitBtnHtml);
+        showFormError(
+          form,
+          "Odeslání se nepodařilo. Zkuste to prosím znovu, nebo mě kontaktujte telefonicky."
+        );
       }
-      // Připraveno pro API: const data = Object.fromEntries(new FormData(form));
-      await new Promise((r) => setTimeout(r, 800));
-      showFormSuccess(form.parentElement, "estimate");
     });
   });
 
   const contactForm = document.getElementById("contact-form");
   if (contactForm) {
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const submitBtnHtml = submitBtn?.innerHTML || "";
+
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const btn = contactForm.querySelector('button[type="submit"]');
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = "Odesílám...";
+      if (!validateContactForm(contactForm)) return;
+
+      setSubmitButtonState(submitBtn, true, "Odesílám...");
+
+      try {
+        await sendContactEmail(contactForm);
+        showFormSuccess(contactForm.parentElement, "contact");
+      } catch (err) {
+        console.error("[EmailJS] Chyba odeslání kontaktu:", err);
+        setSubmitButtonState(submitBtn, false, "", submitBtnHtml);
+        showFormError(
+          contactForm,
+          "Odeslání se nepodařilo. Zkuste to prosím znovu, nebo mě kontaktujte telefonicky."
+        );
       }
-      await new Promise((r) => setTimeout(r, 800));
-      showFormSuccess(contactForm.parentElement, "contact");
     });
   }
 }

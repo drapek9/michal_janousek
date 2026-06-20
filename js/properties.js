@@ -6,8 +6,23 @@ function propertyDetailUrl(property) {
   return `nemovitost.html?slug=${encodeURIComponent(property.slug)}`;
 }
 
+function normalizePropertyImages(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean);
+  }
+  if (value && typeof value === "object") {
+    return Object.values(value)
+      .map((item) => String(item).trim())
+      .filter(Boolean);
+  }
+  if (typeof value === "string" && value.trim()) {
+    return [value.trim()];
+  }
+  return [];
+}
+
 function getPropertyImages(property) {
-  const images = property.images?.length ? [...property.images] : [];
+  const images = normalizePropertyImages(property.images);
   if (property.image && !images.includes(property.image)) {
     images.unshift(property.image);
   }
@@ -142,9 +157,9 @@ function initPropertyGallery(images, title) {
 
 function propertyCardHtml(property) {
   const isSold = property.status === "sold";
-  const priceDisplay = isSold && property.priceLabel
-    ? property.priceLabel
-    : formatPrice(property.price);
+  const priceDisplay = formatPrice(property.price);
+  const params = resolvePropertyParams(property);
+  const summary = propertyShortSummaryLine(property, params);
 
   return `
     <article class="card fade-in">
@@ -155,11 +170,11 @@ function propertyCardHtml(property) {
         </div>
         <div class="card__body">
           <h3 class="card__title">${property.title}</h3>
-          <p class="card__location">${ICONS.mapPin} ${property.location}, ${property.city}</p>
+          <p class="card__location">${ICONS.mapPin} ${property.location}</p>
           <div class="card__footer">
             <div>
               <p class="card__price">${priceDisplay}</p>
-              <p class="card__meta">${isSold ? formatPrice(property.price) : `${property.area} m²${property.rooms ? " · " + property.rooms : ""}`}</p>
+              ${summary ? `<p class="card__meta">${escapeHtml(summary)}</p>` : ""}
             </div>
           </div>
         </div>
@@ -168,9 +183,17 @@ function propertyCardHtml(property) {
   `;
 }
 
-function renderPropertyGrid(container, properties, limit) {
+function propertyEmptyHtml(message) {
+  return `<p class="properties-empty text-body">${message}</p>`;
+}
+
+function renderPropertyGrid(container, properties, limit, emptyMessage = "") {
   if (!container) return;
   const list = limit ? properties.slice(0, limit) : properties;
+  if (!list.length) {
+    container.innerHTML = emptyMessage ? propertyEmptyHtml(emptyMessage) : "";
+    return;
+  }
   container.innerHTML = list.map(propertyCardHtml).join("");
   if (typeof observeFadeIn === "function") observeFadeIn(container);
 }
@@ -195,9 +218,13 @@ function initPropertyListing() {
   });
 
   function applyFilter() {
-    const filtered = PROPERTIES.filter((p) => p.status === filter);
+    const filtered = PROPERTIES.filter((p) =>
+      window.PropertiesApi
+        ? PropertiesApi.filterByListingStatus(p, filter)
+        : p.status === filter
+    );
     if (filtered.length === 0) {
-      grid.innerHTML = '<p class="text-center text-body">V této kategorii zatím nejsou žídné nemovitosti.</p>';
+      grid.innerHTML = propertyEmptyHtml("V této kategorii zatím nejsou žádné nemovitosti.");
     } else {
       renderPropertyGrid(grid, filtered);
     }
@@ -218,17 +245,43 @@ const PROPERTY_TYPE_LABELS = {
   dum: "Rodinný dům",
   pozemek: "Pozemek",
   komercni: "Komerční nemovitost",
-  ostatni: "Ostatní",
 };
 
 const KEY_PARAM_DEFS = [
-  { key: "floor", label: "Patro" },
-  { key: "floors", label: "Počet podlaží" },
-  { key: "landArea", label: "Plocha pozemku", format: (v) => `${v} m²` },
+  { key: "condition", label: "Stav" },
+  { key: "penb", label: "PENB" },
   { key: "ownership", label: "Vlastnictví" },
   { key: "buildingType", label: "Typ stavby" },
-  { key: "parking", label: "Parkování" },
 ];
+
+function getAllSpecParamDefs(propertyType) {
+  const defs = [];
+
+  if (propertyType !== "pozemek") {
+    defs.push({ key: "disposition", label: "Dispozice" });
+  }
+
+  defs.push({
+    key: "usableArea",
+    label: propertyType === "pozemek" ? "Plocha" : "Užitná plocha",
+    format: (v) => `${v} m²`,
+  });
+
+  if (propertyType === "byt") {
+    defs.push({ key: "floor", label: "Patro", format: (v) => `${v}. patro` });
+  }
+  if (propertyType === "dum") {
+    defs.push({ key: "landArea", label: "Plocha pozemku", format: (v) => `${v} m²` });
+  }
+
+  if (propertyType !== "pozemek") {
+    defs.push(...KEY_PARAM_DEFS);
+  } else {
+    defs.push({ key: "ownership", label: "Vlastnictví" });
+  }
+
+  return defs;
+}
 
 const HIGHLIGHT_DEFS = [
   { key: "balcony", label: "Balkon" },
@@ -251,15 +304,8 @@ function escapeHtml(text) {
 function resolveLocationDetail(property) {
   const detail = property.locationDetail || {};
   return {
-    address: detail.address || "",
-    street: detail.street || "",
-    city: detail.city || property.city || "",
-    district: detail.district || (typeof property.location === "string" ? property.location : ""),
-    county: detail.county || "",
-    region: detail.region || "",
-    lat: detail.lat ?? null,
-    lng: detail.lng ?? null,
-    approximate: Boolean(detail.approximate),
+    lat: detail.lat ?? property.map_lat ?? null,
+    lng: detail.lng ?? property.map_lng ?? null,
   };
 }
 
@@ -269,7 +315,8 @@ function resolvePropertyParams(property) {
     disposition: property.params?.disposition ?? property.rooms,
     usableArea: property.params?.usableArea ?? property.area,
     penb: property.params?.penb ?? property.energyClass,
-    floor: property.params?.floor ?? property.floor,
+    floor: property.floor ?? property.params?.floor,
+    landArea: property.landArea ?? property.params?.landArea,
     condition: property.params?.condition ?? property.condition,
   };
 
@@ -330,25 +377,25 @@ function updatePropertySeo(property, images) {
   setMetaTag("og:url", url, true);
 }
 
-function propertySummaryLine(property, params) {
+function propertyShortSummaryLine(property, params) {
   const parts = [
     property.offerType && (OFFER_TYPE_LABELS[property.offerType] || property.offerType),
     property.propertyType && (PROPERTY_TYPE_LABELS[property.propertyType] || property.propertyType),
-    params.disposition,
-    params.usableArea && `${params.usableArea} m²`,
-    params.condition,
-    params.penb && `PENB ${params.penb}`,
-  ].filter(Boolean);
+  ];
 
-  return parts.length ? parts.join(" · ") : "";
+  if (params.disposition) parts.push(params.disposition);
+  if (params.usableArea) parts.push(`${params.usableArea} m²`);
+
+  return parts.filter(Boolean).join(" · ");
+}
+
+function propertySummaryLine(property, params) {
+  return propertyShortSummaryLine(property, params);
 }
 
 function propertyDetailHeaderHtml(property, params, location, isSold) {
-  const priceDisplay =
-    isSold && property.priceLabel ? property.priceLabel : formatPrice(property.price);
-  const locationLine = [location.district || property.location, location.city || property.city]
-    .filter(Boolean)
-    .join(", ");
+  const priceDisplay = formatPrice(property.price);
+  const locationLine = property.location || "";
   const summary = propertySummaryLine(property, params);
 
   return `
@@ -364,28 +411,38 @@ function propertyDetailHeaderHtml(property, params, location, isSold) {
     </header>`;
 }
 
-function propertySpecsHtml(params) {
-  const specItems = KEY_PARAM_DEFS.map((def) => {
-    const raw = params[def.key];
-    if (raw == null || raw === "") return null;
-    const value = formatParamValue(raw, def.format);
-    if (value == null) return null;
-    return { label: def.label, value };
-  }).filter(Boolean);
+function buildPropertySpecsHtml(property, params, { compact = false } = {}) {
+  const specItems = getAllSpecParamDefs(property.propertyType)
+    .map((def) => {
+      const raw = params[def.key];
+      if (raw == null || raw === "") return null;
+      const value = formatParamValue(raw, def.format);
+      if (value == null) return null;
+      return { label: def.label, value };
+    })
+    .filter(Boolean);
 
-  const highlights = HIGHLIGHT_DEFS.map((def) => {
-    const raw = params[def.key];
-    if (raw !== true && raw !== "Ano") return null;
-    return def.label;
-  }).filter(Boolean);
+  const highlights =
+    property.propertyType === "pozemek"
+      ? []
+      : HIGHLIGHT_DEFS.map((def) => {
+          const raw = params[def.key];
+          if (raw !== true && raw !== "Ano") return null;
+          return def.label;
+        }).filter(Boolean);
 
   if (!specItems.length && !highlights.length) return "";
 
+  const specsClass = compact ? "property-specs property-specs--card" : "property-specs";
+  const wrapperTag = compact ? "div" : "section";
+  const wrapperClass = compact ? "card__specs" : "property-detail__section fade-in";
+  const aria = compact ? "" : ' aria-label="Parametry nemovitosti"';
+
   return `
-    <section class="property-detail__section fade-in" aria-label="Další parametry">
+    <${wrapperTag} class="${wrapperClass}"${aria}>
       ${
         specItems.length
-          ? `<dl class="property-specs">${specItems
+          ? `<dl class="${specsClass}">${specItems
               .map(
                 (item) => `
             <div class="property-specs__row">
@@ -399,12 +456,16 @@ function propertySpecsHtml(params) {
       }
       ${
         highlights.length
-          ? `<p class="property-specs__highlights">${highlights
-              .map((label) => `<span>${escapeHtml(label)}</span>`)
-              .join("")}</p>`
+          ? `<div class="property-specs__highlights">${highlights
+              .map((label) => `<span class="property-specs__pill">${escapeHtml(label)}</span>`)
+              .join("")}</div>`
           : ""
       }
-    </section>`;
+    </${wrapperTag}>`;
+}
+
+function propertySpecsHtml(property, params) {
+  return buildPropertySpecsHtml(property, params);
 }
 
 function propertyDescriptionHtml(description) {
@@ -418,28 +479,23 @@ function propertyDescriptionHtml(description) {
     </section>`;
 }
 
-function propertyLocationHtml(location) {
+function propertyLocationHtml(location, property) {
   const hasMap = location.lat != null && location.lng != null;
-  const addressLine = location.address || [location.street, location.city].filter(Boolean).join(", ");
+  const locationLine = property.location || "";
 
-  if (!hasMap && !addressLine) return "";
+  if (!hasMap && !locationLine) return "";
 
   return `
     <section class="property-detail__section fade-in" aria-labelledby="property-location-heading">
       <h2 id="property-location-heading" class="property-detail__section-title">Lokalita</h2>
       ${
         hasMap
-          ? `<div class="property-map${location.approximate ? " property-map--approx" : ""}" id="property-map" data-lat="${location.lat}" data-lng="${location.lng}" data-approximate="${location.approximate ? "1" : "0"}"></div>`
+          ? `<div class="property-map" id="property-map" data-lat="${location.lat}" data-lng="${location.lng}"></div>`
           : ""
       }
       ${
-        location.approximate && hasMap
-          ? `<p class="property-map__note">Poloha je zobrazena přibližně.</p>`
-          : ""
-      }
-      ${
-        addressLine
-          ? `<p class="property-location__address">${ICONS.mapPin}<span>${escapeHtml(addressLine)}</span></p>`
+        locationLine
+          ? `<p class="property-location__address">${ICONS.mapPin}<span>${escapeHtml(locationLine)}</span></p>`
           : ""
       }
     </section>`;
@@ -474,39 +530,53 @@ function initPropertyMap() {
 
   const lat = Number(container.dataset.lat);
   const lng = Number(container.dataset.lng);
-  const approximate = container.dataset.approximate === "1";
   if (Number.isNaN(lat) || Number.isNaN(lng)) return;
 
   const map = L.map(container, {
     scrollWheelZoom: false,
     zoomControl: true,
-  }).setView([lat, lng], approximate ? 14 : 16);
+  }).setView([lat, lng], 16);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     maxZoom: 19,
   }).addTo(map);
 
-  if (approximate) {
-    L.circle([lat, lng], {
-      radius: 500,
-      color: "#dc1c2e",
-      fillColor: "#dc1c2e",
-      fillOpacity: 0.12,
-      weight: 2,
-    }).addTo(map);
-  } else {
-    L.marker([lat, lng]).addTo(map);
-  }
+  L.marker([lat, lng]).addTo(map);
 
   setTimeout(() => map.invalidateSize(), 100);
 }
 
-function initPropertyDetail() {
+async function initPropertyDetail() {
   const root = document.getElementById("property-detail");
   if (!root) return;
 
   const slug = new URLSearchParams(window.location.search).get("slug");
+  if (!slug) {
+    root.innerHTML = `
+      <div class="container section text-center">
+        <h1 class="heading-section">Nemovitost nenalezena</h1>
+        <p class="text-body mt-lg"><a href="nemovitosti.html" class="link-arrow">${ICONS.arrowRight} Zpět na nemovitosti</a></p>
+      </div>
+    `;
+    document.title = "Nemovitost nenalezena | " + SITE.name;
+    return;
+  }
+
+  root.innerHTML = '<div class="container section"><p class="text-body text-center">Načítám detail nemovitosti…</p></div>';
+
+  if (window.PropertiesApi) {
+    try {
+      if (typeof PropertiesApi.loadPropertyBySlug === "function") {
+        await PropertiesApi.loadPropertyBySlug(slug);
+      } else {
+        await PropertiesApi.loadCatalog();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   const property = getPropertyBySlug(slug);
 
   if (!property) {
@@ -541,9 +611,9 @@ function initPropertyDetail() {
         </div>
         ${propertyBrokerHtml(isSold)}
         <div class="property-detail__sections">
-          ${propertySpecsHtml(params)}
+          ${propertySpecsHtml(property, params)}
           ${propertyDescriptionHtml(property.description)}
-          ${propertyLocationHtml(location)}
+          ${propertyLocationHtml(location, property)}
         </div>
       </div>
     </article>
@@ -560,21 +630,61 @@ function initHomeProperties() {
   if (availableEl) {
     renderPropertyGrid(
       availableEl,
-      PROPERTIES.filter((p) => p.status === "available"),
-      3
+      PROPERTIES.filter((p) =>
+        window.PropertiesApi
+          ? PropertiesApi.filterByListingStatus(p, "available")
+          : p.status === "available"
+      ),
+      3,
+      "V aktuální nabídce zatím nejsou žádné nemovitosti."
     );
   }
   if (soldEl) {
     renderPropertyGrid(
       soldEl,
       PROPERTIES.filter((p) => p.status === "sold"),
-      3
+      3,
+      "Zatím nejsou žádné prodané reference."
     );
   }
 }
 
+async function initPropertiesFromApi() {
+  const needsData =
+    document.getElementById("home-available") ||
+    document.getElementById("home-sold") ||
+    document.getElementById("properties-grid") ||
+    document.getElementById("property-detail");
+
+  if (!needsData || !window.PropertiesApi) return;
+
+  try {
+    await PropertiesApi.loadCatalog();
+  } catch (err) {
+    console.error("Nepodařilo se načíst nemovitosti:", err);
+    const grid = document.getElementById("properties-grid");
+    if (grid) {
+      grid.innerHTML = propertyEmptyHtml("Nabídku se nepodařilo načíst. Zkuste stránku obnovit.");
+    }
+    return;
+  }
+
+  initHomeProperties();
+  initPropertyListing();
+  await initPropertyDetail();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  if (window.PropertiesApi) {
+    initPropertiesFromApi();
+    return;
+  }
   initHomeProperties();
   initPropertyListing();
   initPropertyDetail();
+});
+
+// Zpět z historie prohlížeče – znovu načíst stránku (jinak zůstane starý obsah)
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) location.reload();
 });

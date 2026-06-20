@@ -34,3 +34,32 @@ const SITE = {
     { href: "kontakt.html", label: "Kontakt" },
   ],
 };
+
+/**
+ * EmailJS – odesílání formulářů
+ * 1. Účet na https://www.emailjs.com/
+ * 2. Přidejte e-mailovou službu (Gmail / Outlook / SMTP)
+ * 3. Vytvořte 2 šablony (odhad + kontakt) – proměnné níže
+ * 4. Zkopírujte Public Key, Service ID a Template ID sem
+ *
+ * Šablona ODHAZ (estimate):
+ *   {{from_name}}, {{from_email}}, {{reply_to}}, {{phone}}
+ *   {{property_type}}, {{estimate_type}}, {{city}}, {{street}}, {{area}}
+ *   {{dispozice}}, {{ownership}}, {{building_construction}}, {{house_type}}, {{extra_info}}
+ *   {{summary}} – celý přehled jako text
+ *
+ * Šablona KONTAKT (contact):
+ *   {{from_name}}, {{from_email}}, {{reply_to}}, {{phone}}, {{message}}, {{summary}}
+ *
+ * V nastavení šablony nastavte Reply-To na {{reply_to}}, aby šlo odpovědět klientovi.
+ */
+const EMAILJS = {
+  enabled: true,
+  publicKey: "53BraLtdA9dtrb9xA",
+  serviceId: "service_fyy1p0g",
+  toEmail: "michal.janousek@re-max.cz",
+  templates: {
+    estimate: "template_8nfusmu",
+    contact: "template_pgil9a2",
+  },
+};

@@ -55,11 +55,11 @@ const SITE = {
  */
 const EMAILJS = {
   enabled: true,
-  publicKey: "53BraLtdA9dtrb9xA",
-  serviceId: "service_fyy1p0g",
+  publicKey: "EP6s_IuoFgtKjMvxM",
+  serviceId: "service_bltvsgm",
   toEmail: "michal.janousek@re-max.cz",
   templates: {
-    estimate: "template_8nfusmu",
-    contact: "template_pgil9a2",
+    estimate: "template_5zbvjcq",
+    contact: "template_9qlbp1k",
   },
 };

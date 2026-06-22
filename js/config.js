@@ -63,3 +63,15 @@ const EMAILJS = {
     contact: "template_9qlbp1k",
   },
 };
+
+/**
+ * Cookies a analytika
+ * googleAnalyticsId – po doplnění ID (např. G-XXXXXXXX) se GA načte jen po souhlasu uživatele
+ */
+const COOKIES = {
+  storageKey: "mj_cookie_consent",
+  version: 1,
+  analytics: {
+    googleAnalyticsId: "G-R3NX605GN4",
+  },
+};

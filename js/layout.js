@@ -109,11 +109,18 @@ function renderFooter() {
             <p style="margin-top:0.5rem;color:rgba(255,255,255,0.7);font-size:0.9375rem">${SITE.address.full}</p>
             <p style="margin-top:0.25rem;color:rgba(255,255,255,0.7);font-size:0.9375rem">${SITE.regions.join(" · ")}</p>
           </div>
+          <div class="footer-legal">
+            <h4 class="footer-heading">Právní informace</h4>
+            <ul>
+              <li><a href="ochrana-osobnich-udaju.html">Ochrana osobních údajů</a></li>
+              <li><a href="cookies.html">Cookies</a></li>
+            </ul>
+          </div>
         </div>
         <div class="footer-bottom">
           <div class="footer-bottom__row">
             <p>© ${new Date().getFullYear()} ${SITE.name}. Všechna práva vyhrazena.</p>
-            <p><a href="ochrana-osobnich-udaju.html" class="footer-legal-link">Ochrana osobních údajů</a></p>
+            <p><a href="ochrana-osobnich-udaju.html" class="footer-legal-link">Ochrana osobních údajů</a> · <a href="cookies.html" class="footer-legal-link">Cookies</a></p>
             <p>Nezávislý realitní makléř v síti RE/MAX</p>
           </div>
           <p class="footer-credit">
@@ -187,6 +194,19 @@ function initLayout() {
   initSamePageNavScroll(setMobileMenuOpen);
 
   initSocialLinks();
+  initCookieConsentLoader();
+}
+
+function initCookieConsentLoader() {
+  if (document.getElementById("cookie-consent-script")) return;
+
+  const script = document.createElement("script");
+  script.id = "cookie-consent-script";
+  script.src = "js/cookies.js";
+  script.onload = () => {
+    if (typeof initCookieConsent === "function") initCookieConsent();
+  };
+  document.body.appendChild(script);
 }
 
 function initSamePageNavScroll(closeMobileMenu) {

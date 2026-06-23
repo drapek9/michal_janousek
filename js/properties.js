@@ -31,6 +31,17 @@ function getPropertyImages(property) {
 
 const GALLERY_SIDE_SLOTS = 4;
 
+const PROPERTY_STATUS_LABELS = {
+  available: "V nabídce",
+  reserved: "Rezervováno",
+  sold: "Prodáno",
+};
+
+function propertyStatusBadgeHtml(status) {
+  const key = PROPERTY_STATUS_LABELS[status] ? status : "available";
+  return `<span class="card__badge card__badge--${key}">${PROPERTY_STATUS_LABELS[key]}</span>`;
+}
+
 function propertyGalleryThumbHtml(src, index, total, extraClass = "") {
   return `
     <button type="button" class="property-gallery__thumb${extraClass}" data-gallery-open="${index}" aria-label="Zobrazit fotografii ${index + 1} z ${total}">
@@ -38,8 +49,8 @@ function propertyGalleryThumbHtml(src, index, total, extraClass = "") {
     </button>`;
 }
 
-function propertyGalleryHtml(images, title, isSold) {
-  const badge = `<span class="card__badge card__badge--${isSold ? "sold" : "available"}">${isSold ? "Prodáno" : "V nabídce"}</span>`;
+function propertyGalleryHtml(images, title, status) {
+  const badge = propertyStatusBadgeHtml(status);
   const mainAlt = `${title} – fotografie 1`;
   const total = images.length;
 
@@ -156,7 +167,6 @@ function initPropertyGallery(images, title) {
 }
 
 function propertyCardHtml(property) {
-  const isSold = property.status === "sold";
   const priceDisplay = formatPrice(property.price);
   const params = resolvePropertyParams(property);
   const summary = propertyShortSummaryLine(property, params);
@@ -166,7 +176,7 @@ function propertyCardHtml(property) {
       <a href="${propertyDetailUrl(property)}" class="card__inner">
         <div class="card__image">
           <img src="${property.image}" alt="${property.title}" loading="lazy" width="400" height="300">
-          <span class="card__badge card__badge--${isSold ? "sold" : "available"}">${isSold ? "Prodáno" : "V nabídce"}</span>
+          ${propertyStatusBadgeHtml(property.status)}
         </div>
         <div class="card__body">
           <h3 class="card__title">${property.title}</h3>
@@ -603,7 +613,7 @@ async function initPropertyDetail() {
         <a href="nemovitosti.html" class="property-detail__back link-arrow">← Zpět na nemovitosti</a>
       </div>
       <div class="container property-detail__gallery-wrap">
-        ${propertyGalleryHtml(images, property.title, isSold)}
+        ${propertyGalleryHtml(images, property.title, property.status)}
       </div>
       <div class="container property-detail__body">
         <div class="property-detail__intro">

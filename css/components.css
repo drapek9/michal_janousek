@@ -135,6 +135,10 @@
   background: var(--color-red);
 }
 
+.card__badge--reserved {
+  background: #b8860b;
+}
+
 .card__badge--sold {
   background: var(--color-navy);
 }

@@ -36,6 +36,62 @@ const SITE = {
 };
 
 /**
+ * SEO – meta tagy, strukturovaná data, regionální nastavení
+ */
+const SEO = {
+  language: "cs",
+  locale: "cs_CZ",
+  defaultImage: "images/fotka_michal_janousek_velka.jpeg",
+  address: {
+    street: "Husova 557",
+    locality: "Slaný",
+    postalCode: "27401",
+    country: "CZ",
+  },
+  geo: {
+    region: "CZ-ST",
+    placename: "Slaný",
+    latitude: 50.2315125,
+    longitude: 14.0839025,
+  },
+  breadcrumbs: {
+    home: [{ name: "Domů", path: "/" }],
+    "o-mne": [
+      { name: "Domů", path: "/" },
+      { name: "O mně", path: "o-mne.html" },
+    ],
+    sluzby: [
+      { name: "Domů", path: "/" },
+      { name: "Služby", path: "sluzby.html" },
+    ],
+    nemovitosti: [
+      { name: "Domů", path: "/" },
+      { name: "Nemovitosti", path: "nemovitosti.html" },
+    ],
+    reference: [
+      { name: "Domů", path: "/" },
+      { name: "Reference", path: "reference.html" },
+    ],
+    kontakt: [
+      { name: "Domů", path: "/" },
+      { name: "Kontakt", path: "kontakt.html" },
+    ],
+    "odhad-zdarma": [
+      { name: "Domů", path: "/" },
+      { name: "Odhad zdarma", path: "odhad-zdarma.html" },
+    ],
+    "ochrana-osobnich-udaju": [
+      { name: "Domů", path: "/" },
+      { name: "Ochrana osobních údajů", path: "ochrana-osobnich-udaju.html" },
+    ],
+    cookies: [
+      { name: "Domů", path: "/" },
+      { name: "Cookies", path: "cookies.html" },
+    ],
+  },
+};
+
+/**
  * EmailJS – odesílání formulářů
  * 1. Účet na https://www.emailjs.com/
  * 2. Přidejte e-mailovou službu (Gmail / Outlook / SMTP)

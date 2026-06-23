@@ -373,6 +373,11 @@ function setMetaTag(name, content, isProperty = false) {
 }
 
 function updatePropertySeo(property, images) {
+  if (window.SEO?.applyPropertySeo) {
+    window.SEO.applyPropertySeo(property, images);
+    return;
+  }
+
   const title = `${property.title} | ${SITE.name}`;
   const description = truncateText(property.description);
   const image = images[0] || property.image;

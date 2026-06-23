@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
-Sitemap: https://michaljanousek.cz/sitemap.xml
+Sitemap: https://michaljanousek.cz/sitemap.php

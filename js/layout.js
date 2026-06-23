@@ -134,6 +134,8 @@ function renderFooter() {
 }
 
 function initLayout() {
+  initSeoLoader();
+
   const headerEl = document.getElementById("header-placeholder");
   const footerEl = document.getElementById("footer-placeholder");
   if (headerEl) headerEl.outerHTML = renderHeader();
@@ -195,6 +197,15 @@ function initLayout() {
 
   initSocialLinks();
   initCookieConsentLoader();
+}
+
+function initSeoLoader() {
+  if (document.getElementById("seo-script")) return;
+
+  const script = document.createElement("script");
+  script.id = "seo-script";
+  script.src = "js/seo.js";
+  document.head.appendChild(script);
 }
 
 function initCookieConsentLoader() {

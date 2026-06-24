@@ -255,6 +255,7 @@ const PROPERTY_TYPE_LABELS = {
   dum: "Rodinný dům",
   pozemek: "Pozemek",
   komercni: "Komerční nemovitost",
+  garaz: "Garáž",
 };
 
 const KEY_PARAM_DEFS = [
@@ -267,7 +268,7 @@ const KEY_PARAM_DEFS = [
 function getAllSpecParamDefs(propertyType) {
   const defs = [];
 
-  if (propertyType !== "pozemek") {
+  if (propertyType !== "pozemek" && propertyType !== "garaz") {
     defs.push({ key: "disposition", label: "Dispozice" });
   }
 
@@ -438,7 +439,7 @@ function buildPropertySpecsHtml(property, params, { compact = false } = {}) {
     .filter(Boolean);
 
   const highlights =
-    property.propertyType === "pozemek"
+    property.propertyType === "pozemek" || property.propertyType === "garaz"
       ? []
       : HIGHLIGHT_DEFS.map((def) => {
           const raw = params[def.key];

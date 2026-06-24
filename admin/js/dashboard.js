@@ -394,6 +394,11 @@ function buildPayloadFromForm(imageValue, extraImages = []) {
     Object.assign(params, getCheckedParamFlags());
   } else if (type === "pozemek") {
     params.usableArea = propertyForm.area.value ? Number(propertyForm.area.value) : null;
+  } else if (type === "garaz") {
+    params.usableArea = propertyForm.area.value ? Number(propertyForm.area.value) : null;
+    params.condition = propertyForm.condition.value.trim() || null;
+    params.buildingType = propertyForm.building_type.value.trim() || null;
+    params.penb = propertyForm.penb.value.trim() || null;
   } else {
     params.disposition = propertyForm.rooms.value.trim() || null;
     params.usableArea = propertyForm.area.value ? Number(propertyForm.area.value) : null;

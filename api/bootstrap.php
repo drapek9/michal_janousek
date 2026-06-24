@@ -357,6 +357,14 @@ function apply_property_type_params_rules(string $propertyType, ?array $params, 
         return ['params' => $params ?: null, 'rooms' => $rooms];
     }
 
+    if ($propertyType === 'garaz') {
+        unset($params['disposition']);
+        $params = strip_amenity_params($params);
+        $rooms = null;
+
+        return ['params' => $params ?: null, 'rooms' => $rooms];
+    }
+
     if ($propertyType === 'byt') {
         // land_area se neukládá u bytu
     }
@@ -419,7 +427,7 @@ function validate_property_payload(array $data, bool $isUpdate = false): array
     }
 
     $propertyType = (string) ($data['property_type'] ?? 'byt');
-    if (!in_array($propertyType, ['byt', 'dum', 'pozemek', 'komercni'], true)) {
+    if (!in_array($propertyType, ['byt', 'dum', 'pozemek', 'komercni', 'garaz'], true)) {
         json_error('Neplatný typ nemovitosti.');
     }
 

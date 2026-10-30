@@ -120,11 +120,6 @@ function seoBuildOrganizationJsonLd() {
       "@type": "AdministrativeArea",
       name,
     })),
-    parentOrganization: {
-      "@type": "Organization",
-      name: SITE.office,
-      url: SITE.officeUrl,
-    },
     sameAs: Object.values(SITE.social || {}).filter(Boolean),
   };
 }

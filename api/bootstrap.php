@@ -427,7 +427,7 @@ function validate_property_payload(array $data, bool $isUpdate = false): array
     }
 
     $propertyType = (string) ($data['property_type'] ?? 'byt');
-    if (!in_array($propertyType, ['byt', 'dum', 'pozemek', 'komercni', 'garaz'], true)) {
+    if (!in_array($propertyType, ['byt', 'dum', 'chata', 'pozemek', 'komercni', 'garaz'], true)) {
         json_error('Neplatný typ nemovitosti.');
     }
 
@@ -496,7 +496,7 @@ function validate_property_payload(array $data, bool $isUpdate = false): array
 
     if ($propertyType === 'byt') {
         $landArea = null;
-    } elseif ($propertyType === 'dum') {
+    } elseif ($propertyType === 'dum' || $propertyType === 'chata') {
         $floor = null;
     } else {
         $floor = null;

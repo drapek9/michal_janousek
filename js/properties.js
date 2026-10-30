@@ -253,6 +253,7 @@ const OFFER_TYPE_LABELS = {
 const PROPERTY_TYPE_LABELS = {
   byt: "Byt",
   dum: "Rodinný dům",
+  chata: "Chata",
   pozemek: "Pozemek",
   komercni: "Komerční nemovitost",
   garaz: "Garáž",
@@ -281,7 +282,7 @@ function getAllSpecParamDefs(propertyType) {
   if (propertyType === "byt") {
     defs.push({ key: "floor", label: "Patro", format: (v) => `${v}. patro` });
   }
-  if (propertyType === "dum") {
+  if (propertyType === "dum" || propertyType === "chata") {
     defs.push({ key: "landArea", label: "Plocha pozemku", format: (v) => `${v} m²` });
   }
 

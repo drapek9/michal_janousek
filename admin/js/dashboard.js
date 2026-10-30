@@ -385,7 +385,7 @@ function buildPayloadFromForm(imageValue, extraImages = []) {
     params.buildingType = propertyForm.building_type.value.trim() || null;
     params.penb = propertyForm.penb.value.trim() || null;
     Object.assign(params, getCheckedParamFlags());
-  } else if (type === "dum") {
+  } else if (type === "dum" || type === "chata") {
     params.disposition = propertyForm.rooms.value.trim() || null;
     params.usableArea = propertyForm.area.value ? Number(propertyForm.area.value) : null;
     params.condition = propertyForm.condition.value.trim() || null;
@@ -415,12 +415,12 @@ function buildPayloadFromForm(imageValue, extraImages = []) {
   const priceRaw = propertyForm.price.value.trim();
   const price = priceRaw === "" ? null : Number(priceRaw);
 
-  const rooms = type === "byt" || type === "dum" || type === "komercni"
+  const rooms = type === "byt" || type === "dum" || type === "chata" || type === "komercni"
     ? propertyForm.rooms.value.trim() || null
     : null;
 
   const floor = type === "byt" ? propertyForm.floor.value.trim() || null : null;
-  const landArea = type === "dum" && propertyForm.land_area.value
+  const landArea = (type === "dum" || type === "chata") && propertyForm.land_area.value
     ? Number(propertyForm.land_area.value)
     : null;
 

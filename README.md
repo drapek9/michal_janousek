@@ -1,4 +1,4 @@
-# Michal Janoušek - Realitní makléř RE/MAX Age
+# Michal Janoušek - Realitní makléř
 
 Statický vícestránkový web v čistém **HTML, CSS a JavaScriptu** (bez Reactu a TypeScriptu).
 
@@ -68,6 +68,6 @@ Odeslání je zatím simulované (success obrazovka). Pro produkci připojte end
 
 ## Design
 
-- Bílá, tmavě modrá (`#0A2540`), decentní RE/MAX červená (`#DC1C2E`)
-- Fonty: Inter + Playfair Display (Google Fonts)
+- Bílá, tmavě modrá (`#0A2540`), decentní červená (`#DC1C2E`)
+- Fonty: Inter (Google Fonts)
 - Responzivní layout, plovoucí CTA „Odhad zdarma“

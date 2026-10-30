@@ -92,9 +92,6 @@ function renderFooter() {
         <div class="footer-grid">
           <div class="footer-brand">
             <span class="logo__name">${SITE.name}</span>
-            <div class="footer-brand__logo">
-              <img src="images/remax_logo_bile.png" alt="RE/MAX Age" width="120" height="48" loading="lazy">
-            </div>
             <p>Osobní realitní makléř. Pomohu vám prodat nebo pronajmout nemovitost za maximum - s lidským přístupem a kompletním servisem.</p>
             <a href="odhad-zdarma.html" class="btn btn--primary" style="margin-top:1.5rem">Odhad nemovitosti zdarma</a>
           </div>
@@ -121,7 +118,7 @@ function renderFooter() {
           <div class="footer-bottom__row">
             <p>© ${new Date().getFullYear()} ${SITE.name}. Všechna práva vyhrazena.</p>
             <p><a href="ochrana-osobnich-udaju.html" class="footer-legal-link">Ochrana osobních údajů</a> · <a href="cookies.html" class="footer-legal-link">Cookies</a></p>
-            <p>Nezávislý realitní makléř v síti RE/MAX</p>
+            <p>Osobní realitní makléř</p>
           </div>
           <p class="footer-credit">
             Web vytvořil

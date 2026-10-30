@@ -1,4 +1,4 @@
-/* Design tokens - RE/MAX inspired, personal & minimal */
+/* Design tokens - personal & minimal */
 :root {
   --color-navy: #0a2540;
   --color-navy-light: #1a3a5c;
@@ -15,7 +15,7 @@
   --color-border: rgba(10, 37, 64, 0.1);
 
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Playfair Display", Georgia, serif;
+  --font-display: "Inter", system-ui, -apple-system, sans-serif;
 
   --space-xs: 0.5rem;
   --space-sm: 1rem;

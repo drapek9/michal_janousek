@@ -90,7 +90,7 @@ const FAQ = [
 
 const TIMELINE = [
   { year: "2018", title: "Vstup do realit", description: "Začátek kariéry, první úspěšné prodeje." },
-  { year: "2020", title: "RE/MAX Age", description: "Připojení k RE/MAX Age a celosvětové síti." },
+  { year: "2020", title: "Makléřská praxe", description: "Rozvoj samostatné realitní činnosti a sítě klientů." },
   { year: "2022", title: "Specializace na prodej", description: "Zaměření na rodinné domy a byty ve Středočeském kraji." },
   { year: "2024", title: "Rozšíření působnosti", description: "Praha a Ústecký kraj - kompletní pokrytí regionů." },
   { year: "2025", title: "100+ spokojených klientů", description: "Přes stovku úspěšných transakcí a dlouhodobých vztahů." },

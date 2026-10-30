@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS properties (
   title VARCHAR(500) NOT NULL,
   status ENUM('available', 'reserved', 'sold') NOT NULL DEFAULT 'available',
   offer_type ENUM('prodej', 'pronajem') NOT NULL DEFAULT 'prodej',
-  property_type ENUM('byt', 'dum', 'pozemek', 'komercni', 'garaz') NOT NULL DEFAULT 'byt',
+  property_type ENUM('byt', 'dum', 'chata', 'pozemek', 'komercni', 'garaz') NOT NULL DEFAULT 'byt',
   price DECIMAL(12,0) NULL,
   location VARCHAR(300) NOT NULL,
   map_lat DECIMAL(10,7) NULL,
